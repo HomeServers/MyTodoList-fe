@@ -1,28 +1,36 @@
-import logo from './logo.svg';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Counter from './components/Counter'
-import './App.css';
-
-function Home() {
-  return <h2>Home Page</h2>;
-}
-
-function About() {
-  return <h2>About Page</h2>;
-}
+import React, { useState } from "react";
+import TodoList from "./components/TodoList";
+import AddTodo from "./components/AddTodo";
 
 function App() {
-  return (
-    <Counter />
+  const [todos, setTodos] = useState([]);
 
-    // <Router>
-    //   <Header />
-    //   <Routes>
-    //     <Route path="/" element={<Home />} />
-    //     <Route path="/about" element={<About />} />
-    //   </Routes>
-    // </Router>
+  // 투두 추가
+  const addTodo = (task) => {
+    const newTodo = { id: Date.now(), task, completed: false };
+    setTodos([...todos, newTodo]);
+  };
+
+  // 투두 삭제
+  const deleteTodo = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
+  // 투두 상태 토글 (완료/미완료)
+  const toggleTodo = (id) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  };
+
+  return (
+    <div className="App">
+      <h1>Todo List</h1>
+      <AddTodo addTodo={addTodo} />
+      <TodoList todos={todos} deleteTodo={deleteTodo} toggleTodo={toggleTodo} />
+    </div>
   );
 }
 
