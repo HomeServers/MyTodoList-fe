@@ -5,6 +5,7 @@ import { PrimaryButton} from '../buttons/PrimaryButton';
 import { SecondaryButton} from '../buttons/SecondaryButton'; 
 import { InputField } from '../Inputs/InputField';
 import './styles/KanbanColumn.css'; // 스타일 분리
+import './styles/KanbanBoard.css'
 
 export const KanbanColumn = ({ status, tasks, onAddTask }) => {
   const [isAdding, setIsAdding] = useState(false);
@@ -23,7 +24,7 @@ export const KanbanColumn = ({ status, tasks, onAddTask }) => {
         <div
           {...provided.droppableProps}
           ref={provided.innerRef}
-          className="kanban-column"
+          className="kanban-column kanban-board"
         >
           {/* 컬럼 헤더 */}
           <div className="kanban-header">

@@ -1,0 +1,25 @@
+.kanban-tasks {
+    flex: 1; /* 가변적으로 늘어남 */
+    min-height: 0; /* 스크롤 컨테이너에서 필수 */
+    overflow-y: auto; /* 수직 스크롤 활성화 */
+    padding-right: 8px; /* 스크롤바 여백 */
+  }
+  
+  /* 스크롤바 커스터마이징 */
+  .kanban-tasks::-webkit-scrollbar {
+    width: 8px; /* 스크롤바 너비 */
+  }
+  
+  .kanban-tasks::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1; /* 스크롤바 색상 */
+    border-radius: 4px;
+  }
+  
+  .kanban-tasks::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8; /* 호버 시 더 진한 색상 */
+  }
+  
+  .kanban-tasks::-webkit-scrollbar-track {
+    background-color: #f1f5f9; /* 스크롤 트랙 색상 */
+  }
+  

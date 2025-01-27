@@ -1,5 +1,24 @@
 export const INITIAL_TASKS = {
-    대기: [{ id: '1', content: '요리하기' }, { id: '2', content: '운동하기' }],
-    진행중: [{ id: '3', content: '리액트 공부' }],
-    완료: [{ id: '4', content: '설거지' }],
-  };
+  대기: [
+    { id: '1', content: '요리하기' },
+    { id: '2', content: '운동하기' },
+    { id: '3', content: '운동하기' },
+    { id: '4', content: '운동하기' },
+    { id: '5', content: '운동하기' },
+    { id: '6', content: '운동하기' },
+    { id: '7', content: '운동하기' },
+    { id: '8', content: '운동하기' },
+    { id: '9', content: '운동하기' },
+    { id: '10', content: '운동하기' },
+    { id: '11', content: '운동하기' },
+    { id: '12', content: '운동하기' },
+    { id: '13', content: '운동하기' },
+    { id: '14', content: '운동하기' },
+    { id: '15', content: '운동하기' },
+    { id: '16', content: '운동하기' },
+    { id: '17', content: '운동하기' },
+    { id: '18', content: '운동하기' },
+  ],
+  진행중: [{ id: '19', content: '리액트 공부' }],
+  완료: [{ id: '20', content: '설거지' }],
+};

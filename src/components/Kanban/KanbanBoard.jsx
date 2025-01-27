@@ -1,9 +1,11 @@
 import { DragDropContext } from '@hello-pangea/dnd';
 import { KanbanColumn } from './KanbanColumn';
+import './styles/KanbanBoard.css'
 
 export const KanbanBoard = ({ tasks, onDragEnd, onAddTask }) => (
   <DragDropContext onDragEnd={onDragEnd}>
-    <div style={{ 
+    <div
+    style={{ 
       display: 'flex', 
       gap: '24px', 
       padding: '20px',

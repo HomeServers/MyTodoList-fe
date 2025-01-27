@@ -1,30 +1,56 @@
-/* Buttons.css */
-.btn {
+/* KanbanColumn.css */
+.kanban-column {
+  width: 320px;
+  background: #f3f4f6; /* 밝은 회색 */
+  border-radius: 12px;
+  padding: 16px;
+  margin: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
+  transition: transform 0.2s ease-in-out;
   display: flex;
+  flex-direction: column; /* 세로 레이아웃 */
+}
+
+.kanban-column:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.kanban-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  width: 36px; /* 고정된 너비 */
-  height: 36px; /* 고정된 높이 */
-  border: none;
-  border-radius: 50%; /* 완벽한 원형 */
-  background-color: #e5e7eb; /* 중립적인 회색 */
-  color: #374151; /* 아이콘 색상 */
-  cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
+  margin-bottom: 16px;
 }
 
-.btn:hover {
-  background-color: #d1d5db; /* 호버 시 약간 더 어두운 회색 */
-  transform: scale(1.1); /* 버튼이 살짝 커짐 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 호버 시 그림자 강화 */
+.kanban-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #1f2937;
 }
 
-.btn-primary {
-  background-color: #3b82f6; /* 기본 파란색 */
-  color: white; /* 흰색 아이콘 */
+.kanban-tasks {
+  flex: 1; /* 가변적으로 늘어남 */
+  min-height: 0; /* 스크롤 컨테이너에서 필수 */
+  overflow-y: auto; /* 수직 스크롤 활성화 */
+  padding-right: 8px; /* 스크롤바 여백 */
 }
 
-.btn-primary:hover {
-  background-color: #2563eb; /* 호버 시 조금 더 진한 파란색 */
+/* 스크롤바 커스터마이징 */
+.kanban-tasks::-webkit-scrollbar {
+  width: 8px; /* 스크롤바 너비 */
+}
+
+.kanban-tasks::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1; /* 스크롤바 색상 */
+  border-radius: 4px;
+}
+
+.kanban-tasks::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8; /* 호버 시 더 진한 색상 */
+}
+
+.kanban-tasks::-webkit-scrollbar-track {
+  background-color: #f1f5f9; /* 스크롤 트랙 색상 */
 }
