@@ -10,27 +10,34 @@ const initialTasks = {
 
 function App() {
   const [tasks, setTasks] = useState(initialTasks);
-
+  
   const onDragEnd = (result) => {
     const { source, destination } = result;
     if (!destination) return;
   
     setTasks((prevTasks) => {
-      // 1. 깊은 복사 생성
-      const newTasks = JSON.parse(JSON.stringify(prevTasks));
+      // 1. 불변성 유지를 위한 얕은 복사
+      const newTasks = { ...prevTasks };
   
-      // 2. 원본 배열 변형 방지
-      const sourceColumn = [...newTasks[source.droppableId]];
-      const [movedItem] = sourceColumn.splice(source.index, 1);
-      const destColumn = [...newTasks[destination.droppableId]];
+      // 2. 같은 컬럼 이동 처리
+      if (source.droppableId === destination.droppableId) {
+        const copiedItems = [...newTasks[source.droppableId]];
+        const [removed] = copiedItems.splice(source.index, 1);
+        copiedItems.splice(destination.index, 0, removed);
+        newTasks[source.droppableId] = copiedItems;
+        return newTasks;
+      }
   
-      // 3. 새로운 배열 생성 후 업데이트
-      destColumn.splice(destination.index, 0, movedItem);
+      // 3. 다른 컬럼 이동 처리
+      const sourceItems = [...newTasks[source.droppableId]];
+      const destItems = [...newTasks[destination.droppableId]];
+      const [removed] = sourceItems.splice(source.index, 1);
+      destItems.splice(destination.index, 0, removed);
   
       return {
         ...newTasks,
-        [source.droppableId]: sourceColumn,
-        [destination.droppableId]: destColumn,
+        [source.droppableId]: sourceItems,
+        [destination.droppableId]: destItems,
       };
     });
   };
