@@ -1,7 +1,7 @@
 import { DragDropContext } from '@hello-pangea/dnd';
 import { KanbanColumn } from './KanbanColumn';
 
-export const KanbanBoard = ({ tasks, onDragEnd }) => (
+export const KanbanBoard = ({ tasks, onDragEnd, onAddTask }) => (
   <DragDropContext onDragEnd={onDragEnd}>
     <div style={{ 
       display: 'flex', 
@@ -15,6 +15,7 @@ export const KanbanBoard = ({ tasks, onDragEnd }) => (
           key={status} 
           status={status} 
           tasks={tasks[status]} 
+          onAddTask={onAddTask}  // ✅ onAddTask 전달
         />
       ))}
     </div>
