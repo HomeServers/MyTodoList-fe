@@ -1,23 +1,16 @@
 import { Draggable } from '@hello-pangea/dnd';
+import './styles/KanbanCard.css'; // 카드 스타일 적용
 
 export const KanbanCard = ({ task, index }) => (
-  <Draggable draggableId={task.id} index={index}>
+  <Draggable draggableId={task.hash} index={index}>
     {(provided) => (
       <div
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
         className="kanban-card"
-        style={{
-          ...provided.draggableProps.style,
-          padding: '12px',
-          margin: '8px 0',
-          background: '#fff',
-          borderRadius: '6px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}
       >
-        {task.content}
+        {task.content} {/* 카드 내용 */}
       </div>
     )}
   </Draggable>

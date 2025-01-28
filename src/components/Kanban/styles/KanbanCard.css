@@ -1,0 +1,28 @@
+/* KanbanCard.css */
+.kanban-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff; /* 카드 배경 */
+    padding: 12px 16px; /* 카드 여백 */
+    margin-bottom: 8px; /* 카드 간격 */
+    border-radius: 8px; /* 모서리 둥글게 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 가벼운 그림자 */
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151; /* 텍스트 색상 */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: grab; /* 드래그 가능한 카드 */
+  }
+  
+  .kanban-card:hover {
+    transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 호버 시 더 진한 그림자 */
+  }
+  
+  .kanban-card:active {
+    cursor: grabbing;
+    transform: translateY(0); /* 클릭 시 원래 상태로 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
