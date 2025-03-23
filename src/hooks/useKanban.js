@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const API_URL = 'http://api.todo.nuhgnod.site/api/items'; // 서버 API URL
+const API_URL = 'https://api.todo.nuhgnod.site/api/items'; // 서버 API URL
 
 export const useKanban = () => {
   const [tasks, setTasks] = useState({
