@@ -1,6 +1,7 @@
 # Getting Started with Create React App
-개인 프로젝트로, 현재 https://todo.nuhgnod.site 에서 확인해 볼 수 있습니다.
-프론트에 대한 기초 지식을 가진 상태로 chat-gpt만을 이용하여 front 개발을 목표로 하는 프로젝트입니다.
+개인 프로젝트로, 현재 https://todo.nuhgnod.site 에서 확인해 볼 수 있습니다.  
+프론트에 대한 기초 지식을 가진 상태로 chat-gpt만을 이용하여 front 개발을 목표로 하는 프로젝트입니다.  
+현재 서비스는 v1.0.0 을 가집니다.  
 
 todolist 서비스는 다음과 같은 기능을 제공합니다.
 - 해야할 일, 진행 중, 완료 탭으로 작업을 관리합니다 ( release version 1.0.0 )
