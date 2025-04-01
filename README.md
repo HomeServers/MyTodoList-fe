@@ -1,4 +1,6 @@
 # Getting Started with Create React App
+개인 프로젝트로, 현재 https://todo.nuhgnod.site 에서 확인해 볼 수 있습니다.
+프론트에 대한 기초 지식을 가진 상태로 chat-gpt만을 이용하여 front 개발을 목표로 하는 프로젝트입니다.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
