@@ -1,0 +1,79 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: fadeIn 0.2s ease-in-out;
+  box-sizing: border-box; /* 추가: 패딩을 포함한 너비 계산 */
+}
+
+.modalHeader {
+  margin-bottom: 16px;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.inputArea {
+  margin-bottom: 20px;
+  width: 100%; /* 추가: 너비 100% 명시 */
+  box-sizing: border-box; /* 추가: 박스 사이징 */
+}
+
+.textArea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box; /* 추가: 패딩을 포함한 너비 계산 */
+}
+
+.textArea:focus {
+  outline: none;
+  border-color: #4dabf7;
+  box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.2);
+}
+
+.buttonArea {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  width: 100%; /* 추가: 너비 100% 명시 */
+  box-sizing: border-box; /* 추가: 박스 사이징 */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
