@@ -111,5 +111,5 @@ MIT License 2024 MyTodoList
 ## 📞 연락처
 
 - 웹사이트: [https://todo.nuhgnod.site](https://todo.nuhgnod.site)
-- 이메일: your.email@example.com
-- GitHub: [https://github.com/yourusername/MyTodoList-fe](https://github.com/yourusername/MyTodoList-fe)
+- 이메일: zhfptm12@gmail.com
+- GitHub: [https://github.com/HomeServers/MyTodoList-fe](https://github.com/HomeServers/MyTodoList-fe)
