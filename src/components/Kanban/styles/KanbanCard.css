@@ -1,28 +1,152 @@
 /* KanbanCard.css */
 .kanban-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #ffffff; /* 카드 배경 */
-    padding: 12px 16px; /* 카드 여백 */
-    margin-bottom: 8px; /* 카드 간격 */
-    border-radius: 8px; /* 모서리 둥글게 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 가벼운 그림자 */
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151; /* 텍스트 색상 */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: grab; /* 드래그 가능한 카드 */
-  }
-  
-  .kanban-card:hover {
-    transform: translateY(-2px); /* 살짝 떠오르는 효과 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 호버 시 더 진한 그림자 */
-  }
-  
-  .kanban-card:active {
-    cursor: grabbing;
-    transform: translateY(0); /* 클릭 시 원래 상태로 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 12px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  border-left: 4px solid var(--forest-medium-green);
+  overflow: hidden;
+}
+
+.kanban-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  background-image: linear-gradient(135deg, transparent 50%, var(--forest-very-light-green) 50%);
+  border-top-left-radius: 5px;
+}
+
+.kanban-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  background-color: var(--forest-beige);
+}
+
+.kanban-card.pending {
+  border-left-color: var(--pending-color);
+}
+
+.kanban-card.in-progress {
+  border-left-color: var(--in-progress-color);
+}
+
+.kanban-card.completed {
+  border-left-color: var(--completed-color);
+}
+
+.kanban-card-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--forest-dark-green);
+  display: flex;
+  align-items: center;
+}
+
+.kanban-card-title::before {
+  content: '🍃';
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.kanban-card.pending .kanban-card-title::before {
+  content: '🌱';
+}
+
+.kanban-card.in-progress .kanban-card-title::before {
+  content: '🌿';
+}
+
+.kanban-card.completed .kanban-card-title::before {
+  content: '🌳';
+}
+
+.kanban-card-description {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.kanban-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #777;
+  border-top: 1px dashed var(--forest-very-light-green);
+  padding-top: 8px;
+}
+
+.kanban-card-date {
+  display: flex;
+  align-items: center;
+}
+
+.kanban-card-date::before {
+  content: '🕒';
+  margin-right: 4px;
+}
+
+.kanban-card-priority {
+  display: flex;
+  align-items: center;
+  padding: 3px 6px;
+  border-radius: 12px;
+  background-color: var(--forest-very-light-green);
+  color: var(--forest-dark-green);
+  font-weight: 500;
+}
+
+.kanban-card-priority.high {
+  background-color: #ffcccb;
+  color: #d32f2f;
+}
+
+.kanban-card-priority.medium {
+  background-color: #fff0c2;
+  color: #ed6c02;
+}
+
+.kanban-card-priority.low {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+/* 드래그 중일 때 스타일 */
+.kanban-card.is-dragging {
+  opacity: 0.8;
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
+  background-color: var(--forest-beige);
+  z-index: 10;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.kanban-card {
+  animation: fadeIn 0.3s ease-out;
+  animation-fill-mode: both;
+}
+
+.kanban-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.kanban-card:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.kanban-card:nth-child(n+4) {
+  animation-delay: 0.3s;
+}

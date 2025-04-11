@@ -1,0 +1,157 @@
+:root {
+  /* 숲속 테마 색상 */
+  --forest-dark-green: #2c5f2d;
+  --forest-medium-green: #4e9f3d;
+  --forest-light-green: #97bf8f;
+  --forest-very-light-green: #d0e7ca;
+  --forest-brown: #654321;
+  --forest-light-brown: #a67c52;
+  --forest-beige: #f5f0e1;
+  --forest-sky: #87ceeb;
+  --forest-water: #1e90ff;
+  --forest-sunset: #ff7f50;
+  
+  /* 기능적 색상 */
+  --primary-color: var(--forest-medium-green);
+  --secondary-color: var(--forest-light-green);
+  --background-color: var(--forest-beige);
+  --text-color: #333;
+  --border-color: var(--forest-brown);
+  --hover-color: var(--forest-dark-green);
+  --active-color: var(--forest-very-light-green);
+  
+  /* 상태별 색상 */
+  --pending-color: var(--forest-light-brown);
+  --in-progress-color: var(--forest-medium-green);
+  --completed-color: var(--forest-dark-green);
+  
+  /* 그림자 효과 */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+  
+  /* 둥근 모서리 */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+}
+
+body {
+  background-color: var(--background-color);
+  background-image: url('/forest-background.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  color: var(--text-color);
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* 숲속 테마를 위한 스크롤바 스타일 */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--forest-very-light-green);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--forest-medium-green);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--forest-dark-green);
+}
+
+/* 앱 헤더 스타일 */
+.app-header {
+  background-color: var(--forest-dark-green);
+  color: white;
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 4px solid var(--forest-medium-green);
+}
+
+.app-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/forest-pattern.png');
+  background-size: 200px;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 앱 푸터 스타일 */
+.app-footer {
+  background-color: var(--forest-dark-green);
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+  margin-top: 20px;
+  border-top: 4px solid var(--forest-medium-green);
+  position: relative;
+  overflow: hidden;
+}
+
+.app-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/forest-pattern.png');
+  background-size: 200px;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.app-footer p {
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* 전체 앱 컨테이너 */
+.forest-theme {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-color);
+  background-image: url('/forest-background.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+}
+
+/* 메인 콘텐츠 영역 */
+.kanban-board {
+  flex: 1;
+  margin: 20px;
+  padding: 20px;
+  background-color: rgba(245, 240, 225, 0.8);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--forest-brown);
+  position: relative;
+  overflow: auto;
+}

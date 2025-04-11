@@ -1,25 +1,66 @@
 .kanban-tasks {
-    flex: 1; /* 가변적으로 늘어남 */
-    min-height: 0; /* 스크롤 컨테이너에서 필수 */
-    overflow-y: auto; /* 수직 스크롤 활성화 */
-    padding-right: 8px; /* 스크롤바 여백 */
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  overflow-x: auto;
+  min-height: 80vh;
+  background-color: rgba(245, 240, 225, 0.8); /* 반투명 베이지 배경 */
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  margin: 20px;
+  border: 2px solid var(--forest-brown);
+  position: relative;
+}
+
+.kanban-tasks::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('/forest-pattern.png');
+  background-size: 200px;
+  opacity: 0.05;
+  pointer-events: none;
+  border-radius: var(--border-radius-lg);
+}
+
+.kanban-tasks::-webkit-scrollbar {
+  height: 12px;
+}
+
+.kanban-tasks::-webkit-scrollbar-track {
+  background: var(--forest-very-light-green);
+  border-radius: 10px;
+}
+
+.kanban-tasks::-webkit-scrollbar-thumb {
+  background: var(--forest-medium-green);
+  border-radius: 10px;
+  border: 2px solid var(--forest-very-light-green);
+}
+
+.kanban-tasks::-webkit-scrollbar-thumb:hover {
+  background: var(--forest-dark-green);
+}
+
+/* 애니메이션 효과 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.kanban-tasks {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .kanban-tasks {
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
-  
-  /* 스크롤바 커스터마이징 */
-  .kanban-tasks::-webkit-scrollbar {
-    width: 8px; /* 스크롤바 너비 */
-  }
-  
-  .kanban-tasks::-webkit-scrollbar-thumb {
-    background-color: #cbd5e1; /* 스크롤바 색상 */
-    border-radius: 4px;
-  }
-  
-  .kanban-tasks::-webkit-scrollbar-thumb:hover {
-    background-color: #94a3b8; /* 호버 시 더 진한 색상 */
-  }
-  
-  .kanban-tasks::-webkit-scrollbar-track {
-    background-color: #f1f5f9; /* 스크롤 트랙 색상 */
-  }
-  
+}

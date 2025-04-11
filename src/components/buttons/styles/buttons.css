@@ -1,43 +1,79 @@
 .primaryButton {
-  background-color: #4dabf7;
+  background-color: var(--forest-medium-green);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--border-radius-md);
   padding: 8px 16px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.primaryButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
 .primaryButton:hover {
-  background-color: #339af0;
+  background-color: var(--forest-dark-green);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.primaryButton:hover::before {
+  opacity: 1;
+}
+
+.primaryButton:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 .primaryButton:disabled {
-  background-color: #adb5bd;
+  background-color: var(--forest-very-light-green);
+  color: rgba(255, 255, 255, 0.7);
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .secondaryButton {
   background-color: transparent;
-  color: #495057;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
+  color: var(--forest-dark-green);
+  border: 1px solid var(--forest-medium-green);
+  border-radius: var(--border-radius-md);
   padding: 8px 16px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
 .secondaryButton:hover {
-  background-color: #f1f3f5;
-  border-color: #adb5bd;
+  background-color: var(--forest-very-light-green);
+  border-color: var(--forest-medium-green);
+  transform: translateY(-2px);
+}
+
+.secondaryButton:active {
+  transform: translateY(0);
 }
 
 .secondaryButton:disabled {
-  color: #adb5bd;
-  border-color: #dee2e6;
+  color: var(--forest-very-light-green);
+  border-color: var(--forest-very-light-green);
   cursor: not-allowed;
+  transform: none;
 }
