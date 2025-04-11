@@ -206,4 +206,29 @@ sketch
 .history
 .ionide
 
+### Custom additions ###
+# Build directory
+/build
+
+# Testing
+/coverage
+
+# Local env files
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE specific files
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+.tmp
+.temp
+
+# Debug logs
+debug.log
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,react,node
