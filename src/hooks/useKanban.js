@@ -33,8 +33,9 @@ export const useKanban = () => {
   };
 
   // 2. 새로운 태스크 추가
-  const addTask = async (status, content) => {
-    const newTask = { content, status }; // 서버에서 ID(hash)를 생성
+  const addTask = async (status, { content, dueDate }) => {
+    const newTask = { content, status };
+    if (dueDate) newTask.dueDate = dueDate;
 
     try {
       const response = await fetch(API_URL, {

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './styles/TaskInputModal.module.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 /**
  * 새 태스크 추가를 위한 모달 컴포넌트
@@ -9,14 +11,15 @@ import styles from './styles/TaskInputModal.module.css';
  */
 const TaskInputModal = ({ isOpen, onClose, onConfirm }) => {
   const [content, setContent] = useState('');
+  const [dueDate, setDueDate] = useState(null);
   const modalRef = useRef(null);
   const textareaRef = useRef(null);
 
   // 모달이 열리거나 닫힐 때 입력 내용 초기화
   useEffect(() => {
     if (!isOpen) {
-      // 모달이 닫힐 때 입력 내용 초기화
       setContent('');
+      setDueDate(null);
     }
   }, [isOpen]);
 
@@ -56,8 +59,15 @@ const TaskInputModal = ({ isOpen, onClose, onConfirm }) => {
   // 확인 버튼 클릭 핸들러
   const handleConfirm = () => {
     if (content.trim()) {
-      onConfirm(content);
+      let finalDueDate = null;
+      if (dueDate) {
+        const d = new Date(dueDate);
+        d.setHours(23, 59, 59, 999);
+        finalDueDate = d.toISOString();
+      }
+      onConfirm({ content, dueDate: finalDueDate });
       setContent('');
+      setDueDate(null);
     }
   };
 
@@ -66,6 +76,7 @@ const TaskInputModal = ({ isOpen, onClose, onConfirm }) => {
     onClose();
     // 취소 시에도 입력 내용 초기화 (이미 useEffect에서 처리되지만 명시적으로 추가)
     setContent('');
+    setDueDate(null);
   };
 
   // 모달이 닫혀있으면 렌더링하지 않음
@@ -85,6 +96,16 @@ const TaskInputModal = ({ isOpen, onClose, onConfirm }) => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
+          <div style={{ margin: '12px 0' }}>
+            <DatePicker
+              selected={dueDate}
+              onChange={setDueDate}
+              minDate={new Date()}
+              placeholderText="만료일을 선택하세요"
+              dateFormat="yyyy-MM-dd"
+              isClearable
+            />
+          </div>
         </div>
         <div className={styles.buttonArea}>
           <button 

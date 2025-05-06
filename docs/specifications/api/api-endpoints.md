@@ -39,7 +39,8 @@
   ```json
   {
     "content": "새 태스크 내용",
-    "status": "PENDING"
+    "status": "PENDING",
+    "dueDate": "2025-05-01T23:59:59.999" // 또는 null
   }
   ```
 - **응답 예시**:
@@ -48,7 +49,8 @@
     "id": "task789",
     "content": "새 태스크 내용",
     "status": "PENDING",
-    "hash": "task789"
+    "hash": "task789",
+    "dueDate": "2025-05-01T23:59:59.999" // 또는 null
   }
   ```
 
@@ -65,7 +67,8 @@
     "id": "task123",
     "content": "디자인 시안 검토",
     "status": "IN_PROGRESS",
-    "hash": "task123"
+    "hash": "task123",
+    "dueDate": "2025-05-01T23:59:59.999" // 또는 null
   }
   ```
 - **응답**: 업데이트된 태스크 객체
@@ -86,3 +89,4 @@
 | hash   | String | 드래그 앤 드롭을 위한 고유 키 (id와 동일) |
 | content | String | 태스크 내용 |
 | status | String | 태스크 상태 (PENDING, IN_PROGRESS, COMPLETED) |
+| dueDate | String | 마감일 (ISO 8601 문자열) 또는 null |

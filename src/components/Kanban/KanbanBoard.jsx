@@ -17,9 +17,10 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask }) => {
     setIsModalOpen(false);
   };
 
-  const handleAddTask = (content) => {
+  const handleAddTask = (taskObj) => {
     if (currentStatus) {
-      onAddTask(currentStatus, content);
+      // taskObj: { content, dueDate }
+      onAddTask(currentStatus, taskObj);
     }
     setIsModalOpen(false);
   };
