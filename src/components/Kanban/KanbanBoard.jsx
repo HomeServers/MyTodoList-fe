@@ -6,6 +6,20 @@ import { useState } from 'react';
 import './styles/KanbanBoard.css'
 
 export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
+  // EXPIRED 칸반으로 이동, EXPIRED 칸반에서 이동 모두 불가
+  // 실제 이동 애니메이션 및 상태 갱신은 useKanban의 handleDragEnd에서 처리됨
+  const handleDragEnd = (result) => {
+    const { source, destination } = result;
+    if (!destination) return;
+    if (source.droppableId === 'EXPIRED' || destination.droppableId === 'EXPIRED') {
+      return;
+    }
+    // props로 받은 onDragEnd가 useKanban의 handleDragEnd여야 함
+    if (typeof onDragEnd === 'function') {
+      onDragEnd(result);
+    }
+  };
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(null);
   const [detailTask, setDetailTask] = useState(null);
@@ -40,7 +54,7 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
 
   return (
     <>
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={handleDragEnd}>
         <div
           style={{
             display: 'flex', 
@@ -74,7 +88,8 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
         onClose={handleCloseDetailModal}
         onEdit={(editedTask) => {
           if (onUpdateTask) onUpdateTask(editedTask);
-          setDetailTask(editedTask);
+          setIsDetailOpen(false);
+          setDetailTask(null);
         }}
       />
     </>

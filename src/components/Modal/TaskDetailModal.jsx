@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './styles/TaskInputModal.module.css';
 import TaskEditModal from './TaskEditModal';
+import TaskReactivateModal from './TaskReactivateModal';
 
 /**
  * TaskDetailModal - 태스크 상세/수정 모달
@@ -12,6 +13,7 @@ import TaskEditModal from './TaskEditModal';
 const TaskDetailModal = ({ task, isOpen, onClose, onEdit }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editTask, setEditTask] = useState(null);
+  const [isReactivateOpen, setIsReactivateOpen] = useState(false);
 
   if (!isOpen || !task) return null;
 
@@ -52,7 +54,16 @@ const TaskDetailModal = ({ task, isOpen, onClose, onEdit }) => {
           </div>
           <div className={styles.buttonArea}>
             <button className="secondaryButton" onClick={onClose}>닫기</button>
-            <button className="primaryButton" onClick={handleEditClick}>수정</button>
+            {task.status === 'EXPIRED' ? (
+              <button
+                className="primaryButton"
+                onClick={() => setIsReactivateOpen(true)}
+              >
+                재활성화
+              </button>
+            ) : (
+              <button className="primaryButton" onClick={handleEditClick}>수정</button>
+            )}
           </div>
         </div>
       </div>
@@ -61,6 +72,17 @@ const TaskDetailModal = ({ task, isOpen, onClose, onEdit }) => {
         isOpen={isEditOpen}
         onClose={handleEditClose}
         onSave={handleEditSave}
+      />
+      <TaskReactivateModal
+        task={task}
+        isOpen={isReactivateOpen}
+        onClose={() => setIsReactivateOpen(false)}
+        onReactivate={({ dueDate }) => {
+          setIsReactivateOpen(false);
+          if (typeof onEdit === 'function') {
+            onEdit({ ...task, dueDate, status: 'PENDING' });
+          }
+        }}
       />
     </>
   );
