@@ -1,7 +1,7 @@
 # MyTodoList - 직관적인 칸반 스타일 할 일 관리 서비스
 
 <div align="center">
-  <img src="https://img.shields.io/badge/version-v1.2.0-green" alt="version" />
+  <img src="https://img.shields.io/badge/version-v1.3.0-green" alt="version" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="license" />
   <img src="https://img.shields.io/badge/react-18.2.0-61DAFB" alt="react" />
 </div>
@@ -34,7 +34,9 @@
 | v1.1.0 | 2024-03-01 | 작업 만료 기간 설정 기능 |
 | v1.1.1 | 2024-03-15 | 자동 만료 처리 기능 |
 | v1.2.0 | 2025-05-10 | Task 수정 모달(TaskEditModal) 신설, key 중복 경고 해결, 모달 UX 통일 |
-| v1.3.0 | (예정) | 각 칸반 보드 페이지네이션, 만료된 task 재활성화 기능 도입 예정 |
+| v1.3.0 | 2025-05-10 | 만료된 task 재활성화 기능 도입 |
+| v1.4.0 | (예정) | 사용자 기반 서비스로 전환 (로그인 과정 추가) |
+| v1.5.0 | (예정) | 칸반 보드 페이지네이션 도입 예정 |
 
 ## 🛠️ 기술 스택
 
