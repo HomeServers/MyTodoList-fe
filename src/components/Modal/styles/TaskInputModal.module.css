@@ -37,9 +37,60 @@
 
 .inputArea {
   margin-bottom: 20px;
-  width: 100%; /* 추가: 너비 100% 명시 */
-  box-sizing: border-box; /* 추가: 박스 사이징 */
+  width: 100%;
+  box-sizing: border-box;
 }
+
+.dueDateArea {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0 0 0;
+}
+
+.dueDateTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1.5px solid #e5e7eb;
+  background: #f9fafb;
+  color: #222;
+  border-radius: 20px;
+  padding: 6px 32px 6px 14px; /* 오른쪽 패딩 늘림 */
+  font-size: 16px;
+  cursor: pointer;
+  transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  min-height: 38px;
+  position: relative;
+}
+.dueDateTrigger .react-datepicker__close-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 12px;
+  z-index: 2;
+}
+
+.dueDateTrigger:hover,
+.dueDateTrigger:focus {
+  border: 1.5px solid #4dabf7;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(77,171,247,0.10);
+  outline: none;
+}
+.dueDateTriggerLabel {
+  font-size: 15px;
+  font-weight: 500;
+  color: #374151;
+  vertical-align: middle;
+}
+
+/* 기존 dueDateLabel, dueDateInput 스타일 제거(미사용) */
+.dueDateLabel {}
+.dueDateInput {}
+.dueDateInput:focus {}
 
 .textArea {
   width: 100%;
