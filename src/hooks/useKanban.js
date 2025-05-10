@@ -8,7 +8,25 @@ export const useKanban = () => {
     PENDING: [],
     IN_PROGRESS: [],
     COMPLETED: [],
+    EXPIRED: [],
   });
+
+  // 태스크 수정 (내용/마감일)
+  const updateTask = async (editedTask) => {
+    if (!editedTask || !editedTask.id) return;
+    try {
+      // 서버에 PUT 요청
+      await fetch(`${API_URL}/${editedTask.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editedTask),
+      });
+      // 서버에서 최신 데이터로 동기화
+      await fetchTasks();
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
+  };
 
   // 1. 서버에서 데이터 가져오기
   const fetchTasks = async () => {
@@ -24,6 +42,7 @@ export const useKanban = () => {
         PENDING: data.filter((item) => item.status === 'PENDING'),
         IN_PROGRESS: data.filter((item) => item.status === 'IN_PROGRESS'),
         COMPLETED: data.filter((item) => item.status === 'COMPLETED'),
+        EXPIRED: data.filter((item) => item.status === 'EXPIRED'),
       };
 
       setTasks(groupedTasks);
@@ -99,5 +118,5 @@ export const useKanban = () => {
     fetchTasks();
   }, []);
 
-  return { tasks, handleDragEnd, addTask };
+  return { tasks, handleDragEnd, addTask, updateTask };
 };

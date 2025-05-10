@@ -96,16 +96,36 @@ const TaskInputModal = ({ isOpen, onClose, onConfirm }) => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
-          <div style={{ margin: '12px 0' }}>
-            <DatePicker
-              selected={dueDate}
-              onChange={setDueDate}
-              minDate={new Date()}
-              placeholderText="만료일을 선택하세요"
-              dateFormat="yyyy-MM-dd"
-              isClearable
-            />
-          </div>
+          <div className={styles.dueDateArea}>
+  <DatePicker
+    selected={dueDate}
+    onChange={setDueDate}
+    minDate={new Date()}
+    placeholderText="마감일 선택(선택 안 해도 됨)"
+    dateFormat="yyyy-MM-dd"
+    isClearable
+    customInput={
+      <button
+        type="button"
+        className={styles.dueDateTrigger}
+        tabIndex={0}
+      >
+        <span
+          role="img"
+          aria-label="calendar"
+          style={{ fontSize: '24px', marginRight: '8px', verticalAlign: 'middle' }}
+        >
+          📅
+        </span>
+        <span className={styles.dueDateTriggerLabel}>
+          {dueDate ?
+            (typeof dueDate === 'string' ? dueDate : dueDate.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }))
+            : '마감일'}
+        </span>
+      </button>
+    }
+  />
+</div>
         </div>
         <div className={styles.buttonArea}>
           <button 

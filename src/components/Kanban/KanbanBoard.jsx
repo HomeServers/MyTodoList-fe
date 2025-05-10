@@ -1,12 +1,15 @@
 import { DragDropContext } from '@hello-pangea/dnd';
 import { KanbanColumn } from './KanbanColumn';
 import TaskInputModal from '../Modal/TaskInputModal';
+import TaskDetailModal from '../Modal/TaskDetailModal';
 import { useState } from 'react';
 import './styles/KanbanBoard.css'
 
-export const KanbanBoard = ({ tasks, onDragEnd, onAddTask }) => {
+export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(null);
+  const [detailTask, setDetailTask] = useState(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const handleOpenModal = (status) => {
     setCurrentStatus(status);
@@ -25,17 +28,27 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask }) => {
     setIsModalOpen(false);
   };
 
+  // 카드 클릭 시 상세 모달 열기
+  const handleCardClick = (task) => {
+    setDetailTask(task);
+    setIsDetailOpen(true);
+  };
+  const handleCloseDetailModal = () => {
+    setIsDetailOpen(false);
+    setDetailTask(null);
+  };
+
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
         <div
-        style={{ 
-          display: 'flex', 
-          gap: '24px', 
-          padding: '20px',
-          minHeight: '100vh',
-          backgroundColor: '#f1f3f5'
-        }}>
+          style={{
+            display: 'flex', 
+            gap: '24px', 
+            padding: '20px',
+            minHeight: '100vh',
+            backgroundColor: '#f1f3f5'
+          }}>
           {Object.keys(tasks).map((status) => (
             <KanbanColumn 
               key={status} 
@@ -43,6 +56,7 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask }) => {
               tasks={tasks[status]} 
               onAddTask={onAddTask}
               onOpenModal={handleOpenModal}
+              onCardClick={handleCardClick}
             />
           ))}
         </div>
@@ -53,6 +67,15 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask }) => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onConfirm={handleAddTask}
+      />
+      <TaskDetailModal
+        task={detailTask}
+        isOpen={isDetailOpen}
+        onClose={handleCloseDetailModal}
+        onEdit={(editedTask) => {
+          if (onUpdateTask) onUpdateTask(editedTask);
+          setDetailTask(editedTask);
+        }}
       />
     </>
   );
