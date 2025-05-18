@@ -1,7 +1,7 @@
 # MyTodoList - 직관적인 칸반 스타일 할 일 관리 서비스
 
 <div align="center">
-  <img src="https://img.shields.io/badge/version-v1.3.0-green" alt="version" />
+  <img src="https://img.shields.io/badge/version-v1.4.0-green" alt="version" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="license" />
   <img src="https://img.shields.io/badge/react-18.2.0-61DAFB" alt="react" />
 </div>
@@ -14,14 +14,12 @@
 
 ## 📋 주요 기능
 
-### 현재 버전 (v1.2.0)
-- **Task 수정 모달(TaskEditModal)**: TaskInputModal과 동일한 UX/UI로 태스크 내용/마감일 수정 가능
-- **상세 모달(TaskDetailModal)에서 수정 진입** 및 서버 동기화
-- **key 중복 경고 완전 해결** (KanbanCard key: task.id || task.hash)
-- **모달 기반 작업 입력/수정**: 일관된 UX, DatePicker, 클리어(X) 아이콘
-- **칸반 보드 스타일 작업 관리**: 해야할 일, 진행 중, 완료 상태로 직관적인 작업 관리
-- **작업 기간 설정/자동 만료**
-- **드래그 앤 드롭**: 직관적인 작업 상태 변경
+### 현재 버전 (v1.4.0)
+- **로그인/회원가입 기능 도입**: 사용자 계정 기반 서비스로 전환
+- **JWT 토큰 기반 인증**: accessToken으로 모든 API 인증 처리
+- **로그인/회원가입 모달 UI**: 로그인/회원가입을 위한 직관적 UX
+- **토큰 클라이언트 상태/로컬스토리지 동기화**: 새로고침해도 로그인 유지
+- **기존 기능**: 칸반 보드, 작업 수정/만료/재활성화, 모달 기반 입력/수정, 드래그 앤 드롭 등
 
 ## 🚀 버전 히스토리
 
@@ -35,7 +33,7 @@
 | v1.1.1 | 2024-03-15 | 자동 만료 처리 기능 |
 | v1.2.0 | 2025-05-10 | Task 수정 모달(TaskEditModal) 신설, key 중복 경고 해결, 모달 UX 통일 |
 | v1.3.0 | 2025-05-10 | 만료된 task 재활성화 기능 도입 |
-| v1.4.0 | (예정) | 사용자 기반 서비스로 전환 (로그인 과정 추가) |
+| v1.4.0 | 2025-05-18 | 사용자 기반 서비스 전환(로그인/회원가입, JWT 인증, 토큰 관리, 새로고침 로그인 유지) |
 | v1.5.0 | (예정) | 칸반 보드 페이지네이션 도입 예정 |
 
 ## 🛠️ 기술 스택
