@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 const BASE_URL = process.env.REACT_APP_API_URL || 'https://api.todo.nuhgnod.site/api/items'; // 서버 API URL 
 const API_URL = BASE_URL + "/api/items"
 
-export const useKanban = () => {
+export const useKanban = (accessToken) => {
   const [tasks, setTasks] = useState({
     PENDING: [],
     IN_PROGRESS: [],
@@ -18,7 +18,10 @@ export const useKanban = () => {
       // 서버에 PUT 요청
       await fetch(`${API_URL}/${editedTask.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
         body: JSON.stringify(editedTask),
       });
       // 서버에서 최신 데이터로 동기화
@@ -33,7 +36,9 @@ export const useKanban = () => {
     console.log("🔥 API 호출 시작:", API_URL); // API URL 확인
 
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_URL, {
+        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+      });
       if (!response.ok) throw new Error('Failed to fetch tasks');
       const data = await response.json();
 
@@ -59,7 +64,10 @@ export const useKanban = () => {
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
         body: JSON.stringify(newTask),
       });
 
@@ -105,7 +113,10 @@ export const useKanban = () => {
     try {
       await fetch(`${API_URL}/${movedTask.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
         body: JSON.stringify(movedTask),
       });
     } catch (error) {
