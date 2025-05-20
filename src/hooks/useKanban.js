@@ -135,8 +135,8 @@ export const useKanban = (accessToken) => {
     if (!taskToDelete || !taskToDelete.id) return;
     
     try {
-      // 서버에 DELETE 요청
-      await apiDeleteTask(taskToDelete.id);
+      // 서버에 DELETE 요청 (인증 토큰 포함)
+      await apiDeleteTask(taskToDelete.id, accessToken);
       
       // UI 상태 업데이트 (삭제된 태스크 제거)
       setTasks((prevTasks) => ({

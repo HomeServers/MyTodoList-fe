@@ -3,19 +3,22 @@
  */
 
 // API 기본 URL (환경 변수에서 가져오거나 기본값 사용)
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+const API_URL = API_BASE_URL + "/api"
 
 /**
  * 태스크 삭제 API 호출
  * @param {string} itemId - 삭제할 태스크 ID
+ * @param {string} [accessToken] - 사용자 인증 토큰
  * @returns {Promise} - 삭제 결과 Promise
  */
-export const deleteTask = async (itemId) => {
+export const deleteTask = async (itemId, accessToken) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/items/${itemId}`, {
+    const response = await fetch(`${API_URL}/items/${itemId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       },
     });
 
@@ -40,7 +43,7 @@ export const deleteTask = async (itemId) => {
  */
 export const fetchTasks = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/items`, {
+    const response = await fetch(`${API_URL}/items`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -65,7 +68,7 @@ export const fetchTasks = async () => {
  */
 export const createTask = async (taskData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/items`, {
+    const response = await fetch(`${API_URL}/items`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -92,7 +95,7 @@ export const createTask = async (taskData) => {
  */
 export const updateTask = async (itemId, taskData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/items/${itemId}`, {
+    const response = await fetch(`${API_URL}/items/${itemId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
