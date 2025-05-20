@@ -1,90 +1,37 @@
 /* KanbanCard.css */
 .kanban-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #ffffff; /* 카드 배경 */
-    padding: 12px 16px; /* 카드 여백 */
-    margin-bottom: 8px; /* 카드 간격 */
-    border-radius: 8px; /* 모서리 둥글게 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 가벼운 그림자 */
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151; /* 텍스트 색상 */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: grab; /* 드래그 가능한 카드 */
-  }
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
+  justify-content: space-between;
+  background-color: #ffffff; /* 카드 배경 */
+  padding: 12px 16px; /* 카드 여백 */
+  margin-bottom: 8px; /* 카드 간격 */
+  border-radius: 8px; /* 모서리 둥글게 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 가벼운 그림자 */
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151; /* 텍스트 색상 */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: grab; /* 드래그 가능한 카드 */
+  width: 100%;
+  position: relative; /* 삭제 버튼 위치 지정을 위해 필요 */
 }
 
-/* 만료일 pill 스타일 */
-.expired-due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #fff6f6;
-  color: #b71c1c;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(255,0,0,0.04);
-  border: 1px solid #ffb3b3;
+.kanban-card:hover {
+  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 호버 시 더 진한 그림자 */
 }
 
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
-.expired-due-badge span {
-  margin-right: 4px;
+.kanban-card:active {
+  cursor: grabbing;
+  transform: translateY(0); /* 클릭 시 원래 상태로 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
+/* 드래그 중인 카드 스타일 */
+.dragging {
+  opacity: 0.8;
+  background-color: #f9fafb;
 }
 
 /* 만료(EXPIRED) 태스크 카드 - 아주 연한 빨간색 배경 */
@@ -94,6 +41,22 @@
   color: #b71c1c;
 }
 
+/* 만료된 콘텐츠 스타일 */
+.expired-content {
+  text-decoration: line-through;
+  color: #b71c1c;
+}
+
+/* 카드 콘텐츠 래퍼 */
+.card-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  cursor: pointer;
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 처리 */
+}
+
 /* 일반 due-date pill 스타일 */
 .due-badge {
   display: inline-flex;
@@ -107,7 +70,10 @@
   font-weight: 600;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   border: 1px solid #e5e7eb;
+  align-self: flex-start; /* 자신의 내용 크기만큼만 차지하도록 설정 */
+  width: auto; /* 자동 너비 설정 */
 }
+
 .due-badge span {
   margin-right: 4px;
 }
@@ -125,357 +91,69 @@
   font-weight: 600;
   box-shadow: 0 1px 4px rgba(255,0,0,0.04);
   border: 1px solid #ffb3b3;
+  align-self: flex-start; /* 자신의 내용 크기만큼만 차지하도록 설정 */
+  width: auto; /* 자동 너비 설정 */
 }
 
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
 .expired-due-badge span {
   margin-right: 4px;
 }
 
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
+/* 삭제 버튼 스타일 */
+.delete-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  border: none;
+  display: flex;
   align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.2s, transform 0.2s, background-color 0.2s;
+  color: #64748b;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
-.due-badge span {
-  margin-right: 4px;
+
+.kanban-card:hover .delete-button {
+  opacity: 1;
+  transform: scale(1);
 }
-  
-  .kanban-card:hover {
-    transform: translateY(-2px); /* 살짝 떠오르는 효과 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 호버 시 더 진한 그림자 */
+
+.delete-button:hover {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+.delete-button:active {
+  transform: scale(0.9);
+}
+
+/* 모바일 환경 최적화 */
+@media (max-width: 768px) {
+  .kanban-card {
+    padding: 10px 12px;
+    padding-right: 40px; /* 삭제 버튼을 위한 공간 확보 */
+    font-size: 13px;
   }
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
-
-/* 만료일 pill 스타일 */
-.expired-due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #fff6f6;
-  color: #b71c1c;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(255,0,0,0.04);
-  border: 1px solid #ffb3b3;
-}
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
-.expired-due-badge span {
-  margin-right: 4px;
-}
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
-
-/* 만료(EXPIRED) 태스크 카드 - 아주 연한 빨간색 배경 */
-.expired-card {
-  background-color: #ffeaea !important;
-  border: 1px solid #ffb3b3;
-  color: #b71c1c;
-}
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
-
-/* 만료일 pill 스타일 */
-.expired-due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #fff6f6;
-  color: #b71c1c;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(255,0,0,0.04);
-  border: 1px solid #ffb3b3;
-}
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
-.expired-due-badge span {
-  margin-right: 4px;
-}
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
   
-  .kanban-card:active {
-    cursor: grabbing;
-    transform: translateY(0); /* 클릭 시 원래 상태로 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  .due-badge, .expired-due-badge {
+    font-size: 11px;
+    padding: 1px 8px 1px 4px;
   }
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
-
-/* 만료일 pill 스타일 */
-.expired-due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #fff6f6;
-  color: #b71c1c;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(255,0,0,0.04);
-  border: 1px solid #ffb3b3;
-}
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
-.expired-due-badge span {
-  margin-right: 4px;
-}
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
-
-/* 만료(EXPIRED) 태스크 카드 - 아주 연한 빨간색 배경 */
-.expired-card {
-  background-color: #ffeaea !important;
-  border: 1px solid #ffb3b3;
-  color: #b71c1c;
-}
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
-
-/* 만료일 pill 스타일 */
-.expired-due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #fff6f6;
-  color: #b71c1c;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(255,0,0,0.04);
-  border: 1px solid #ffb3b3;
-}
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
-.expired-due-badge span {
-  margin-right: 4px;
-}
-
-/* 일반 due-date pill 스타일 */
-.due-badge {
-  display: inline-flex;
-  align-items: center;
-  background: #f5f5fa;
-  color: #374151;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px 2px 6px;
-  margin-top: 4px;
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  border: 1px solid #e5e7eb;
-}
-.due-badge span {
-  margin-right: 4px;
-}
   
+  .delete-button {
+    opacity: 0.7;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .kanban-card:hover .delete-button {
+    opacity: 1;
+  }
+}

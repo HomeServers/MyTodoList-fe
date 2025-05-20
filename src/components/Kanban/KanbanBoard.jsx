@@ -2,10 +2,11 @@ import { DragDropContext } from '@hello-pangea/dnd';
 import { KanbanColumn } from './KanbanColumn';
 import TaskInputModal from '../Modal/TaskInputModal';
 import TaskDetailModal from '../Modal/TaskDetailModal';
+import ConfirmDeleteModal from '../Modal/ConfirmDeleteModal';
 import { useState } from 'react';
 import './styles/KanbanBoard.css'
 
-export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
+export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDeleteTask }) => {
   // EXPIRED 칸반으로 이동, EXPIRED 칸반에서 이동 모두 불가
   // 실제 이동 애니메이션 및 상태 갱신은 useKanban의 handleDragEnd에서 처리됨
   const handleDragEnd = (result) => {
@@ -24,6 +25,8 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
   const [currentStatus, setCurrentStatus] = useState(null);
   const [detailTask, setDetailTask] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [deleteTask, setDeleteTask] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleOpenModal = (status) => {
     setCurrentStatus(status);
@@ -52,17 +55,31 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
     setDetailTask(null);
   };
 
+  // 태스크 삭제 처리
+  const handleDeleteTask = (task) => {
+    setDeleteTask(task);
+    setIsDeleteModalOpen(true);
+  };
+
+  // 삭제 확인 시 실행
+  const handleConfirmDelete = () => {
+    if (deleteTask && onDeleteTask) {
+      onDeleteTask(deleteTask);
+    }
+    setIsDeleteModalOpen(false);
+    setDeleteTask(null);
+  };
+
+  // 삭제 취소 시 실행
+  const handleCancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setDeleteTask(null);
+  };
+
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div
-          style={{
-            display: 'flex', 
-            gap: '24px', 
-            padding: '20px',
-            minHeight: '100vh',
-            backgroundColor: '#f1f3f5'
-          }}>
+        <div className="kanban-board-container">
           {Object.keys(tasks).map((status) => (
             <KanbanColumn 
               key={status} 
@@ -71,6 +88,7 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
               onAddTask={onAddTask}
               onOpenModal={handleOpenModal}
               onCardClick={handleCardClick}
+              onDeleteTask={handleDeleteTask}
             />
           ))}
         </div>
@@ -91,6 +109,12 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
           setIsDetailOpen(false);
           setDetailTask(null);
         }}
+        onDelete={handleDeleteTask}
+      />
+      <ConfirmDeleteModal
+        isOpen={isDeleteModalOpen}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
       />
     </>
   );
