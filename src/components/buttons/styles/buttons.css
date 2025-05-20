@@ -41,3 +41,25 @@
   border-color: #dee2e6;
   cursor: not-allowed;
 }
+
+/* 삭제 버튼 스타일 */
+.dangerButton {
+  background-color: #fa5252;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dangerButton:hover {
+  background-color: #e03131;
+}
+
+.dangerButton:disabled {
+  background-color: #ffa8a8;
+  cursor: not-allowed;
+}
