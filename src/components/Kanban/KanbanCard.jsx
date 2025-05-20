@@ -71,25 +71,7 @@ export const KanbanCard = ({ task, index, onCardClick, onDeleteClick }) => {
                 e.stopPropagation(); // 카드 클릭 이벤트 전파 방지
                 onDeleteClick(task);
               }}
-              style={{
-                position: 'absolute',
-                top: '8px',
-                right: '8px',
-                background: 'rgba(255, 255, 255, 0.8)',
-                border: '1px solid #ddd',
-                borderRadius: '50%',
-                width: '24px',
-                height: '24px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                fontSize: '14px',
-                color: '#666',
-                transition: 'all 0.2s ease',
-                padding: 0,
-                zIndex: 5
-              }}
+              aria-label="Delete task"
             >
               ×
             </button>

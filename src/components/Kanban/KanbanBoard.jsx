@@ -79,14 +79,7 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDelet
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div
-          style={{
-            display: 'flex', 
-            gap: '24px', 
-            padding: '20px',
-            minHeight: '100vh',
-            backgroundColor: '#f1f3f5'
-          }}>
+        <div className="kanban-board-container">
           {Object.keys(tasks).map((status) => (
             <KanbanColumn 
               key={status} 

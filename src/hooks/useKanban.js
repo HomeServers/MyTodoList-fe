@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { deleteTask as apiDeleteTask } from '../services/api';
 
 const BASE_URL = process.env.REACT_APP_API_URL || 'https://api.todo.nuhgnod.site'; // 서버 API URL 
 const API_URL = BASE_URL + "/api/items"
@@ -129,28 +130,27 @@ export const useKanban = (accessToken) => {
     fetchTasks();
   }, []);
 
-  // 4. 태스크 삭제
+  // 4. 태스크 삭제 처리
   const deleteTask = async (taskToDelete) => {
     if (!taskToDelete || !taskToDelete.id) return;
     
     try {
       // 서버에 DELETE 요청
-      const response = await fetch(`${API_URL}/${taskToDelete.id}`, {
-        method: 'DELETE',
-        headers: {
-          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        },
-      });
+      await apiDeleteTask(taskToDelete.id);
       
-      if (!response.ok) throw new Error('Failed to delete task');
-      
-      // UI 상태 업데이트
+      // UI 상태 업데이트 (삭제된 태스크 제거)
       setTasks((prevTasks) => ({
         ...prevTasks,
         [taskToDelete.status]: prevTasks[taskToDelete.status].filter(task => task.id !== taskToDelete.id),
       }));
+      
+      // 삭제 성공 피드백
+      console.log(`Task ${taskToDelete.id} deleted successfully`);
     } catch (error) {
       console.error('Error deleting task:', error);
+      // 실패 시 오류 처리
+      alert(`태스크 삭제 중 오류가 발생했습니다: ${error.message}`);
+
     }
   };
 

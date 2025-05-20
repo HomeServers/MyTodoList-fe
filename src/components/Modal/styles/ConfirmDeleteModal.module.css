@@ -9,6 +9,7 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
 .modalContent {
@@ -19,23 +20,40 @@
   max-width: 400px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: 1px solid var(--color-green-100, #e6f7ef);
+  animation: slideUp 0.3s ease-in-out;
+  box-sizing: border-box;
+  margin: 0 16px;
+}
+
+.modalHeader {
+  margin-bottom: 16px;
 }
 
 .modalTitle {
-  margin: 0 0 16px 0;
+  margin: 0;
   font-size: 18px;
   font-weight: 600;
   color: #333;
 }
 
-.modalMessage {
-  margin: 0 0 24px 0;
-  font-size: 15px;
-  line-height: 1.5;
-  color: #555;
+.modalBody {
+  margin-bottom: 24px;
 }
 
-.modalButtons {
+.modalBody p {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.warningText {
+  color: #ef4444;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.buttonArea {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
@@ -70,18 +88,41 @@
   background-color: var(--color-green-600, #16a34a);
 }
 
-/* 모바일 환경 최적화 */
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 모바일 반응형 스타일 */
 @media (max-width: 768px) {
   .modalContent {
     padding: 20px;
+    max-width: calc(100% - 32px);
     width: 95%;
+
   }
   
   .modalTitle {
     font-size: 16px;
   }
   
-  .modalMessage {
+  .modalBody p {
     font-size: 14px;
     margin-bottom: 20px;
   }

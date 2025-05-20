@@ -2,6 +2,7 @@
 .kanban-column {
   height: 800px;
   width: 320px;
+  min-width: 280px;
   background: #f3f4f6; /* 밝은 회색 */
   border-radius: 12px;
   padding: 16px;
@@ -10,10 +11,9 @@
   transition: transform 0.2s ease-in-out;
   display: flex;
   flex-direction: column; /* 세로 레이아웃 */
-
   flex: 1; /* 가변적으로 늘어남 */
   min-height: 0; /* 스크롤 컨테이너에서 필수 */
-  overflow-x: auto; /* 수직 스크롤 활성화 */
+  overflow-y: auto; /* 수직 스크롤 활성화 */
   padding-right: 8px; /* 스크롤바 여백 */
 }
 
@@ -53,4 +53,23 @@
   font-size: 1.2rem;
   font-weight: bold;
   color: #1f2937;
+}
+
+/* 모바일 반응형 스타일 */
+@media (max-width: 768px) {
+  .kanban-column {
+    width: 100%;
+    height: auto;
+    min-height: 300px;
+    margin: 0;
+    overflow-y: visible;
+  }
+  
+  .kanban-header {
+    margin-bottom: 12px;
+  }
+  
+  .kanban-title {
+    font-size: 1.1rem;
+  }
 }
