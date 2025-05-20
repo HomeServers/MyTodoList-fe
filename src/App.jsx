@@ -15,7 +15,7 @@ export default function App() {
     }
   });
   const accessToken = user?.accessToken;
-  const { tasks, handleDragEnd, addTask, updateTask } = useKanban(accessToken);
+  const { tasks, handleDragEnd, addTask, updateTask, deleteTask } = useKanban(accessToken);
 
   // user 상태 변경 시 localStorage 동기화
   useEffect(() => {
@@ -36,6 +36,7 @@ export default function App() {
       onDragEnd={handleDragEnd}
       onAddTask={addTask}
       onUpdateTask={updateTask}
+      onDeleteTask={deleteTask}
     />
   );
 }

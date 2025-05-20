@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { PrimaryButton } from '../buttons/PrimaryButton';
 import './styles/KanbanColumn.css';
 
-export const KanbanColumn = ({ status, tasks, onAddTask, onOpenModal, onCardClick }) => {
+export const KanbanColumn = ({ status, tasks, onAddTask, onOpenModal, onCardClick, onDeleteClick }) => {
   return (
     <Droppable droppableId={status}>
       {(provided) => (
@@ -26,7 +26,13 @@ export const KanbanColumn = ({ status, tasks, onAddTask, onOpenModal, onCardClic
           {/* 태스크 카드 영역 */}
           <div className="kanban-tasks">
             {tasks.map((task, index) => (
-              <KanbanCard key={task.id || task.hash} task={task} index={index} onCardClick={onCardClick} />
+              <KanbanCard 
+                key={task.id || task.hash} 
+                task={task} 
+                index={index} 
+                onCardClick={onCardClick}
+                onDeleteClick={onDeleteClick}
+              />
             ))}
             {provided.placeholder}
           </div>

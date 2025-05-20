@@ -1,0 +1,93 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: white;
+  border-radius: 8px;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--color-green-100, #e6f7ef);
+}
+
+.modalTitle {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.modalMessage {
+  margin: 0 0 24px 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #555;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.modalButton {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton {
+  background-color: white;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.cancelButton:hover {
+  background-color: #f5f5f5;
+}
+
+.confirmButton {
+  background-color: var(--color-green-500, #22c55e);
+  color: white;
+  border: none;
+}
+
+.confirmButton:hover {
+  background-color: var(--color-green-600, #16a34a);
+}
+
+/* 모바일 환경 최적화 */
+@media (max-width: 768px) {
+  .modalContent {
+    padding: 20px;
+    width: 95%;
+  }
+  
+  .modalTitle {
+    font-size: 16px;
+  }
+  
+  .modalMessage {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .modalButton {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}

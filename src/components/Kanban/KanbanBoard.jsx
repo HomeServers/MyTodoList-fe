@@ -2,10 +2,11 @@ import { DragDropContext } from '@hello-pangea/dnd';
 import { KanbanColumn } from './KanbanColumn';
 import TaskInputModal from '../Modal/TaskInputModal';
 import TaskDetailModal from '../Modal/TaskDetailModal';
+import ConfirmDeleteModal from '../Modal/ConfirmDeleteModal';
 import { useState } from 'react';
 import './styles/KanbanBoard.css'
 
-export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
+export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDeleteTask }) => {
   // EXPIRED 칸반으로 이동, EXPIRED 칸반에서 이동 모두 불가
   // 실제 이동 애니메이션 및 상태 갱신은 useKanban의 handleDragEnd에서 처리됨
   const handleDragEnd = (result) => {
@@ -24,6 +25,8 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
   const [currentStatus, setCurrentStatus] = useState(null);
   const [detailTask, setDetailTask] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
 
   const handleOpenModal = (status) => {
     setCurrentStatus(status);
@@ -52,6 +55,27 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
     setDetailTask(null);
   };
 
+  // 삭제 버튼 클릭 시 확인 모달 열기
+  const handleDeleteClick = (task) => {
+    setTaskToDelete(task);
+    setIsDeleteModalOpen(true);
+  };
+
+  // 삭제 확인 모달 닫기
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setTaskToDelete(null);
+  };
+
+  // 삭제 확인 시 실제 삭제 처리
+  const handleConfirmDelete = () => {
+    if (taskToDelete && onDeleteTask) {
+      onDeleteTask(taskToDelete);
+    }
+    setIsDeleteModalOpen(false);
+    setTaskToDelete(null);
+  };
+
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd}>
@@ -71,6 +95,7 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
               onAddTask={onAddTask}
               onOpenModal={handleOpenModal}
               onCardClick={handleCardClick}
+              onDeleteClick={handleDeleteClick}
             />
           ))}
         </div>
@@ -91,6 +116,12 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask }) => {
           setIsDetailOpen(false);
           setDetailTask(null);
         }}
+      />
+      <ConfirmDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        taskTitle={taskToDelete?.content || ''}
       />
     </>
   );
