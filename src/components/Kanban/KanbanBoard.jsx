@@ -25,8 +25,8 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDelet
   const [currentStatus, setCurrentStatus] = useState(null);
   const [detailTask, setDetailTask] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [deleteTask, setDeleteTask] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
 
   const handleOpenModal = (status) => {
     setCurrentStatus(status);
@@ -55,25 +55,25 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDelet
     setDetailTask(null);
   };
 
-  // 태스크 삭제 처리
-  const handleDeleteTask = (task) => {
-    setDeleteTask(task);
+  // 삭제 버튼 클릭 시 확인 모달 열기
+  const handleDeleteClick = (task) => {
+    setTaskToDelete(task);
     setIsDeleteModalOpen(true);
   };
 
-  // 삭제 확인 시 실행
-  const handleConfirmDelete = () => {
-    if (deleteTask && onDeleteTask) {
-      onDeleteTask(deleteTask);
-    }
+  // 삭제 확인 모달 닫기
+  const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
-    setDeleteTask(null);
+    setTaskToDelete(null);
   };
 
-  // 삭제 취소 시 실행
-  const handleCancelDelete = () => {
+  // 삭제 확인 시 실제 삭제 처리
+  const handleConfirmDelete = () => {
+    if (taskToDelete && onDeleteTask) {
+      onDeleteTask(taskToDelete);
+    }
     setIsDeleteModalOpen(false);
-    setDeleteTask(null);
+    setTaskToDelete(null);
   };
 
   return (
@@ -88,7 +88,7 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDelet
               onAddTask={onAddTask}
               onOpenModal={handleOpenModal}
               onCardClick={handleCardClick}
-              onDeleteTask={handleDeleteTask}
+              onDeleteClick={handleDeleteClick}
             />
           ))}
         </div>
@@ -109,12 +109,12 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDelet
           setIsDetailOpen(false);
           setDetailTask(null);
         }}
-        onDelete={handleDeleteTask}
       />
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
+        taskTitle={taskToDelete?.content || ''}
       />
     </>
   );

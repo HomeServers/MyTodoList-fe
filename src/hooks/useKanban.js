@@ -139,13 +139,10 @@ export const useKanban = (accessToken) => {
       await apiDeleteTask(taskToDelete.id);
       
       // UI 상태 업데이트 (삭제된 태스크 제거)
-      setTasks((prevTasks) => {
-        const status = taskToDelete.status;
-        return {
-          ...prevTasks,
-          [status]: prevTasks[status].filter(task => task.id !== taskToDelete.id)
-        };
-      });
+      setTasks((prevTasks) => ({
+        ...prevTasks,
+        [taskToDelete.status]: prevTasks[taskToDelete.status].filter(task => task.id !== taskToDelete.id),
+      }));
       
       // 삭제 성공 피드백
       console.log(`Task ${taskToDelete.id} deleted successfully`);
@@ -153,6 +150,7 @@ export const useKanban = (accessToken) => {
       console.error('Error deleting task:', error);
       // 실패 시 오류 처리
       alert(`태스크 삭제 중 오류가 발생했습니다: ${error.message}`);
+
     }
   };
 
