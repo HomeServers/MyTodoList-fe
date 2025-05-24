@@ -17,7 +17,7 @@ export const useKanban = (accessToken) => {
     if (!editedTask || !editedTask.id) return;
     try {
       // 서버에 PUT 요청
-      await fetch(`${API_URL}/${editedTask.id}`, {
+      const response = await fetch(`${API_URL}/${editedTask.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -25,6 +25,12 @@ export const useKanban = (accessToken) => {
         },
         body: JSON.stringify(editedTask),
       });
+      
+      if (!response.ok) throw new Error('Failed to update task');
+      
+      const responseData = await response.json();
+      console.log('Updated task response:', responseData); // 디버깅용 로그
+      
       // 서버에서 최신 데이터로 동기화
       await fetchTasks();
     } catch (error) {
@@ -41,14 +47,19 @@ export const useKanban = (accessToken) => {
         headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
       });
       if (!response.ok) throw new Error('Failed to fetch tasks');
-      const data = await response.json();
+      const responseData = await response.json();
+      
+      // API 응답이 data 객체로 감싸져 있는지 확인
+      const taskList = responseData.data ? responseData.data : responseData;
+      
+      console.log('Fetched tasks:', taskList); // 디버깅용 로그
 
       // 상태별로 태스크 분류
       const groupedTasks = {
-        PENDING: data.filter((item) => item.status === 'PENDING'),
-        IN_PROGRESS: data.filter((item) => item.status === 'IN_PROGRESS'),
-        COMPLETED: data.filter((item) => item.status === 'COMPLETED'),
-        EXPIRED: data.filter((item) => item.status === 'EXPIRED'),
+        PENDING: taskList.filter((item) => item.status === 'PENDING'),
+        IN_PROGRESS: taskList.filter((item) => item.status === 'IN_PROGRESS'),
+        COMPLETED: taskList.filter((item) => item.status === 'COMPLETED'),
+        EXPIRED: taskList.filter((item) => item.status === 'EXPIRED'),
       };
 
       setTasks(groupedTasks);
@@ -74,7 +85,12 @@ export const useKanban = (accessToken) => {
 
       if (!response.ok) throw new Error('Failed to add task');
       
-      const createdTask = await response.json(); // 서버가 생성한 아이템 응답 받기
+      const responseData = await response.json(); // 서버가 생성한 아이템 응답 받기
+      
+      // API 응답이 data 객체로 감싸져 있는지 확인
+      const createdTask = responseData.data ? responseData.data : responseData;
+      
+      console.log('Created task:', createdTask); // 디버깅용 로그
 
       // UI 상태 업데이트
       setTasks((prevTasks) => ({
@@ -112,7 +128,7 @@ export const useKanban = (accessToken) => {
 
     // 서버에 상태 업데이트 요청 (PUT)
     try {
-      await fetch(`${API_URL}/${movedTask.id}`, {
+      const response = await fetch(`${API_URL}/${movedTask.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -120,6 +136,13 @@ export const useKanban = (accessToken) => {
         },
         body: JSON.stringify(movedTask),
       });
+      
+      if (!response.ok) throw new Error('Failed to update task status');
+      
+      const responseData = await response.json();
+      // API 응답이 data 객체로 감싸져 있는지 확인
+      const updatedTask = responseData.data ? responseData.data : responseData;
+      console.log('Task status updated:', updatedTask); // 디버깅용 로그
     } catch (error) {
       console.error('Error updating task status:', error);
     }
