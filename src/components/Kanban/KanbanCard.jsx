@@ -9,6 +9,17 @@ export const KanbanCard = ({ task, index, onCardClick, onDeleteClick }) => {
     <Draggable draggableId={task.hash} index={index}>
       {(provided, snapshot) => {
         const isDragging = snapshot.isDragging;
+        
+        // 라이브러리가 제공하는 스타일을 그대로 사용
+        // 중요: 이 스타일은 드래그 중 위치 계산을 정확하게 처리하는 로직을 포함함
+        const style = {
+          ...provided.draggableProps.style,
+          cursor: isDragging ? 'grabbing' : 'pointer',
+          boxShadow: isDragging ? '0 8px 20px rgba(0, 0, 0, 0.2)' : undefined,
+          // 드래그 중이 아니면 트랜지션 적용
+          transition: isDragging ? undefined : 'box-shadow 0.2s, background 0.2s',
+        };
+        
         return (
           <div
             ref={provided.innerRef}
@@ -26,15 +37,7 @@ export const KanbanCard = ({ task, index, onCardClick, onDeleteClick }) => {
             }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            style={{
-              cursor: isDragging ? 'grabbing' : 'pointer',
-              boxShadow: isDragging ? '0 4px 16px 0 rgba(0,0,0,0.18)' : undefined,
-              zIndex: isDragging ? 10 : undefined,
-              background: isDragging ? 'var(--color-green-100,#e6f4ea)' : undefined,
-              transition: 'box-shadow 0.2s, background 0.2s',
-              position: 'relative',
-              ...provided.draggableProps.style,
-            }}
+            style={style}
           >
           <div className={task.status === 'EXPIRED' ? "expired-content" : undefined}>
             {task.content}

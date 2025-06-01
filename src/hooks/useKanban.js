@@ -113,38 +113,65 @@ export const useKanban = (accessToken) => {
     // 드래그된 태스크 가져오기
     const sourceTasks = [...tasks[source.droppableId]];
     const [movedTask] = sourceTasks.splice(source.index, 1);
+    const taskCopy = { ...movedTask }; // 태스크 복사본 생성
 
     // 상태 변경
     const destinationTasks = [...tasks[destination.droppableId]];
-    movedTask.status = destination.droppableId; // 새로운 상태 설정
-    destinationTasks.splice(destination.index, 0, movedTask);
-
-    // 상태 업데이트
-    setTasks({
-      ...tasks,
-      [source.droppableId]: sourceTasks,
-      [destination.droppableId]: destinationTasks,
-    });
+    taskCopy.status = destination.droppableId; // 새로운 상태 설정
+    
+    // 같은 칸반 내에서의 이동인 경우 특별 처리
+    if (source.droppableId === destination.droppableId) {
+      // 같은 칸반 내 이동은 순서만 바꾸고 상태는 변경하지 않음
+      destinationTasks.splice(destination.index, 0, taskCopy);
+      
+      // 상태 업데이트 (같은 칸반 내에서만 변경)
+      setTasks({
+        ...tasks,
+        [source.droppableId]: destinationTasks,
+      });
+    } else {
+      // 다른 칸반으로 이동하는 경우
+      destinationTasks.splice(destination.index, 0, taskCopy);
+      
+      // 상태 업데이트 (소스와 대상 칸반 모두 변경)
+      setTasks({
+        ...tasks,
+        [source.droppableId]: sourceTasks,
+        [destination.droppableId]: destinationTasks,
+      });
+    }
 
     // 서버에 상태 업데이트 요청 (PUT)
     try {
-      const response = await fetch(`${API_URL}/${movedTask.id}`, {
+      console.log('Sending task update to server:', taskCopy); // 디버깅용 로그
+      
+      const response = await fetch(`${API_URL}/${taskCopy.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         },
-        body: JSON.stringify(movedTask),
+        body: JSON.stringify(taskCopy),
       });
       
-      if (!response.ok) throw new Error('Failed to update task status');
+      if (!response.ok) {
+        throw new Error('Failed to update task status');
+      }
       
       const responseData = await response.json();
       // API 응답이 data 객체로 감싸져 있는지 확인
       const updatedTask = responseData.data ? responseData.data : responseData;
       console.log('Task status updated:', updatedTask); // 디버깅용 로그
+      
+      // 서버 응답에 오류가 있으면 전체 데이터 다시 가져오기
+      if (!updatedTask || !updatedTask.id) {
+        console.log('Server response invalid, refreshing all tasks');
+        await fetchTasks();
+      }
     } catch (error) {
       console.error('Error updating task status:', error);
+      // 오류 발생 시 전체 데이터 다시 가져오기
+      await fetchTasks();
     }
   };
 

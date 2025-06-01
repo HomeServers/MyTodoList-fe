@@ -31,8 +31,28 @@
 
 /* 드래그 중인 카드 스타일 */
 .dragging {
-  opacity: 0.8;
-  background-color: #f9fafb;
+  /* 기본 스타일 */
+  opacity: 0.9;
+  background-color: var(--color-green-100, #e6f4ea) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
+  
+  /* 드래그 중 위치 계산을 위한 설정 */
+  pointer-events: none; /* 드래그 중 다른 요소와의 상호작용 방지 */
+  will-change: transform; /* 브라우저에 변환 최적화 힌트 제공 */
+  
+  /* 중요: 라이브러리가 제공하는 위치 계산을 방해하지 않도록 설정 */
+  transform-origin: 0 0 !important; /* 중요: 변환 원점을 왼쪽 상단으로 설정 */
+  margin: 0 !important; /* 드래그 중 마진 제거 */
+  
+  /* 중요: 이런 속성들은 사용하지 않음 - 라이브러리가 계산하는 transform을 사용하기 위해 */
+  /*
+  position: fixed;
+  top: auto !important;
+  left: auto !important;
+  */
+  
+  /* 중요: 드래그 중 위치 계산을 위한 추가 설정 */
+  z-index: 9999 !important; /* 드래그 중 다른 요소보다 위에 표시 */
 }
 
 /* 만료(EXPIRED) 태스크 카드 - 아주 연한 빨간색 배경 */

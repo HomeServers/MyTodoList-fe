@@ -3,13 +3,45 @@ import { KanbanColumn } from './KanbanColumn';
 import TaskInputModal from '../Modal/TaskInputModal';
 import TaskDetailModal from '../Modal/TaskDetailModal';
 import ConfirmDeleteModal from '../Modal/ConfirmDeleteModal';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import './styles/KanbanBoard.css'
 
 export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDeleteTask }) => {
+  // 드래그 중인 요소의 참조를 저장하기 위한 ref
+  const draggedItemRef = useRef(null);
+  
+  // 드래그 시작 시 호출되는 핸들러
+  const handleDragStart = (start) => {
+    // 드래그 시작 시 요소의 ID를 저장
+    const draggableId = start.draggableId;
+    
+    // 약간의 지연 후 드래그 중인 요소의 스타일 조정 (브라우저 렌더링 사이클 고려)
+    setTimeout(() => {
+      // 드래그 중인 요소 찾기
+      const draggedDOM = document.querySelector(`[data-rbd-draggable-id='${draggableId}']`);
+      if (!draggedDOM) return;
+      
+      // 드래그 중인 요소의 클론 요소 찾기 (라이브러리가 생성)
+      const draggedClone = document.querySelector('.dragging');
+      if (!draggedClone) return;
+      
+      // 클론 요소에 커스텀 스타일 적용
+      draggedClone.style.left = 'auto';
+      draggedClone.style.top = 'auto';
+      draggedClone.style.position = 'fixed';
+      draggedClone.style.boxShadow = '0 5px 15px rgba(0,0,0,0.15)';
+      
+      // 참조 저장
+      draggedItemRef.current = { draggableId, draggedDOM, draggedClone };
+    }, 0);
+  };
+  
   // EXPIRED 칸반으로 이동, EXPIRED 칸반에서 이동 모두 불가
   // 실제 이동 애니메이션 및 상태 갱신은 useKanban의 handleDragEnd에서 처리됨
   const handleDragEnd = (result) => {
+    // 드래그 참조 초기화
+    draggedItemRef.current = null;
+    
     const { source, destination } = result;
     if (!destination) return;
     if (source.droppableId === 'EXPIRED' || destination.droppableId === 'EXPIRED') {
@@ -78,7 +110,10 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDelet
 
   return (
     <>
-      <DragDropContext onDragEnd={handleDragEnd}>
+      <DragDropContext 
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
         <div className="kanban-board-container">
           {Object.keys(tasks).map((status) => (
             <KanbanColumn 
