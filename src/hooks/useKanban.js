@@ -92,13 +92,29 @@ export const useKanban = (accessToken) => {
       
       console.log('Created task:', createdTask); // 디버깅용 로그
 
-      // UI 상태 업데이트
-      setTasks((prevTasks) => ({
-        ...prevTasks,
-        [status]: [...prevTasks[status], createdTask], // 응답 받은 데이터를 추가
-      }));
+      // UI 상태 업데이트 - 서버에서 받은 상태값을 사용
+      const taskStatus = createdTask.status || status; // 서버 응답의 상태값 사용, 없으면 원래 상태값 사용
+      
+      setTasks((prevTasks) => {
+        console.log('Previous tasks:', prevTasks);
+        console.log(`Adding task to ${taskStatus} column:`, createdTask);
+        
+        return {
+          ...prevTasks,
+          [taskStatus]: [...prevTasks[taskStatus], createdTask], // 응답 받은 데이터를 추가
+        };
+      });
+      
+      // 상태 업데이트 확인 로그
+      console.log('Tasks after update:', tasks);
+      
+      // 성공 피드백
+      console.log('Task created successfully:', createdTask.id);
+      
+      return createdTask; // 생성된 태스크 반환
     } catch (error) {
       console.error('Error adding task:', error);
+      return null;
     }
   };
 
