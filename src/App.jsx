@@ -26,6 +26,14 @@ export default function App() {
     }
   }, [user]);
 
+  // 로그아웃 핸들러
+  const handleLogout = () => {
+    // 로컬 스토리지에서 사용자 정보 제거
+    localStorage.removeItem('user');
+    // 사용자 상태 초기화
+    setUser(null);
+  };
+
   if (!user) {
     return <LoginPage onLogin={setUser} />;
   }
@@ -37,6 +45,8 @@ export default function App() {
       onAddTask={addTask}
       onUpdateTask={updateTask}
       onDeleteTask={deleteTask}
+      user={user}
+      onLogout={handleLogout}
     />
   );
 }

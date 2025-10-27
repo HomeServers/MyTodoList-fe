@@ -6,7 +6,7 @@ import ConfirmDeleteModal from '../Modal/ConfirmDeleteModal';
 import { useState, useRef } from 'react';
 import './styles/KanbanBoard.css'
 
-export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDeleteTask }) => {
+export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDeleteTask, user, onLogout }) => {
   // 드래그 중인 요소의 참조를 저장하기 위한 ref
   const draggedItemRef = useRef(null);
   
@@ -110,6 +110,24 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDelet
 
   return (
     <>
+      {user && onLogout && (
+        <div style={{ padding: '10px', textAlign: 'right', borderBottom: '1px solid #eee' }}>
+          <span style={{ marginRight: '10px' }}>안녕하세요, {user.account}님</span>
+          <button 
+            onClick={onLogout}
+            style={{ 
+              padding: '5px 10px', 
+              backgroundColor: '#f44336', 
+              color: 'white', 
+              border: 'none', 
+              borderRadius: '4px', 
+              cursor: 'pointer' 
+            }}
+          >
+            로그아웃
+          </button>
+        </div>
+      )}
       <DragDropContext 
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
