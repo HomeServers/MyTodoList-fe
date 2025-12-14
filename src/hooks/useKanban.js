@@ -220,5 +220,5 @@ export const useKanban = (accessToken) => {
     }
   };
 
-  return { tasks, handleDragEnd, addTask, updateTask, deleteTask };
+  return { tasks, handleDragEnd, addTask, updateTask, deleteTask, fetchTasks };
 };

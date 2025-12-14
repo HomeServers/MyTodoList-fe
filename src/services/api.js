@@ -113,3 +113,69 @@ export const updateTask = async (itemId, taskData) => {
     throw error;
   }
 };
+
+/**
+ * 모든 태스크를 .ics 파일로 export
+ * @param {string} accessToken - 사용자 인증 토큰
+ * @returns {Promise} - export 성공 여부
+ */
+export const exportToIcs = async (accessToken) => {
+  try {
+    const response = await fetch(`${API_URL}/items/export.ics`, {
+      method: 'GET',
+      headers: {
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Export 실패 (${response.status})`);
+    }
+
+    // Blob으로 변환하여 파일 다운로드
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mytodolist_${new Date().toISOString().split('T')[0]}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+
+    return { success: true };
+  } catch (error) {
+    console.error('Export 중 오류 발생:', error);
+    throw error;
+  }
+};
+
+/**
+ * .ics 파일에서 태스크 import
+ * @param {File} file - import할 .ics 파일
+ * @param {string} accessToken - 사용자 인증 토큰
+ * @returns {Promise<Object>} - import 결과 { imported, failed, total }
+ */
+export const importFromIcs = async (file, accessToken) => {
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${API_URL}/items/import`, {
+      method: 'POST',
+      headers: {
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Import 실패 (${response.status})`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Import 중 오류 발생:', error);
+    throw error;
+  }
+};

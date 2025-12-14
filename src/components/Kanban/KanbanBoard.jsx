@@ -3,10 +3,11 @@ import { KanbanColumn } from './KanbanColumn';
 import TaskInputModal from '../Modal/TaskInputModal';
 import TaskDetailModal from '../Modal/TaskDetailModal';
 import ConfirmDeleteModal from '../Modal/ConfirmDeleteModal';
+import { ImportExportButtons } from '../ImportExport/ImportExportButtons';
 import { useState, useRef } from 'react';
 import './styles/KanbanBoard.css'
 
-export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDeleteTask, user, onLogout }) => {
+export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDeleteTask, user, onLogout, onRefreshTasks, accessToken }) => {
   // 드래그 중인 요소의 참조를 저장하기 위한 ref
   const draggedItemRef = useRef(null);
   
@@ -113,21 +114,30 @@ export const KanbanBoard = ({ tasks, onDragEnd, onAddTask, onUpdateTask, onDelet
       {user && onLogout && (
         <div style={{ padding: '10px', textAlign: 'right', borderBottom: '1px solid #eee' }}>
           <span style={{ marginRight: '10px' }}>안녕하세요, {user.account}님</span>
-          <button 
+          <button
             onClick={onLogout}
-            style={{ 
-              padding: '5px 10px', 
-              backgroundColor: '#f44336', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '4px', 
-              cursor: 'pointer' 
+            style={{
+              padding: '5px 10px',
+              backgroundColor: '#f44336',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
             }}
           >
             로그아웃
           </button>
         </div>
       )}
+
+      {/* Import/Export 버튼 */}
+      <div style={{ padding: '15px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'center' }}>
+        <ImportExportButtons
+          accessToken={accessToken}
+          onImportSuccess={onRefreshTasks}
+        />
+      </div>
+
       <DragDropContext 
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
