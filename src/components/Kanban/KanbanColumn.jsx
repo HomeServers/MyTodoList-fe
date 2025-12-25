@@ -1,43 +1,54 @@
-import { Droppable } from '@hello-pangea/dnd';
-import { KanbanCard } from './KanbanCard';
-import { useState } from 'react';
-import { PrimaryButton } from '../buttons/PrimaryButton';
-import './styles/KanbanColumn.css';
+import React from 'react';
+import { Plus } from 'lucide-react';
+import KanbanCard from './KanbanCard';
+import { Button } from '../ui/button';
 
-export const KanbanColumn = ({ status, tasks, onAddTask, onOpenModal, onCardClick, onDeleteClick }) => {
-  return (
-    <Droppable droppableId={status}>
-      {(provided) => (
-        <div
-          {...provided.droppableProps}
-          ref={provided.innerRef}
-          className="kanban-column"
-        >
-          {/* 컬럼 헤더 */}
-          <div className="kanban-header">
-            <h3 className="kanban-title">{status}</h3>
-            {status === 'PENDING' && (
-              <PrimaryButton onClick={() => onOpenModal(status)} ariaLabel="Add Task">
-                ➕
-              </PrimaryButton>
-            )}
-          </div>
-
-          {/* 태스크 카드 영역 */}
-          <div className="kanban-tasks">
-            {tasks.map((task, index) => (
-              <KanbanCard 
-                key={task.id || task.hash} 
-                task={task} 
-                index={index} 
-                onCardClick={onCardClick}
-                onDeleteClick={onDeleteClick}
-              />
-            ))}
-            {provided.placeholder}
-          </div>
-        </div>
-      )}
-    </Droppable>
-  );
+const statusLabels = {
+  PENDING: '대기',
+  IN_PROGRESS: '진행중',
+  COMPLETED: '완료',
+  EXPIRED: '만료',
 };
+
+export default function KanbanColumn({ status, tasks, onAddTask, onCardClick, onDeleteTask }) {
+  const label = statusLabels[status] || status;
+  const taskCount = tasks.length;
+
+  return (
+    <div className="flex flex-col min-w-[280px] bg-muted/30 rounded-lg p-4">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <h3 className="font-semibold text-foreground">{label}</h3>
+          <span className="px-2 py-0.5 text-xs font-medium bg-muted rounded-full">
+            {taskCount}
+          </span>
+        </div>
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => onAddTask(status)}
+          className="h-8 w-8"
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <div className="space-y-3 flex-1">
+        {tasks.map((task) => (
+          <KanbanCard
+            key={task.id}
+            task={task}
+            onClick={() => onCardClick(task)}
+            onDelete={onDeleteTask}
+          />
+        ))}
+
+        {tasks.length === 0 && (
+          <div className="text-center py-8 text-sm text-muted-foreground">
+            태스크가 없습니다
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

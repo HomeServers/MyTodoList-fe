@@ -1,90 +1,132 @@
 import React, { useState } from 'react';
-import './LoginPage.css';
-import SignupModal from './SignupModal';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { List } from 'lucide-react';
 
-function LoginPage({ onLogin }) {
-  const [account, setAccount] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [signupOpen, setSignupOpen] = useState(false);
+export default function LoginPage({ onLogin }) {
+  const [isSignup, setIsSignup] = useState(false);
+  const [formData, setFormData] = useState({
+    account: '',
+    password: '',
+    name: ''
+  });
 
-  // 칸반보드와 동일한 API host 사용
-  const BASE_URL = process.env.REACT_APP_API_URL || 'https://api.todo.nuhgnod.site';
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!account || !password) {
-      setError('아이디와 비밀번호를 모두 입력하세요.');
-      return;
-    }
-    setError('');
-    setLoading(true);
-    try {
-      const response = await fetch(`${BASE_URL}/api/auths/signin`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ account, password })
-      });
-      if (response.status === 401) {
-        setError('아이디 또는 비밀번호가 올바르지 않습니다.');
-        setLoading(false);
-        return;
-      }
-      if (response.ok) {
-        const result = await response.json();
-        if (result && result.data && typeof result.data === 'string') {
-          if (onLogin) onLogin({ account, accessToken: result.data });
-        } else {
-          setError('로그인 응답에 accessToken이 없습니다.');
-        }
-      } else {
-        setError('로그인 중 알 수 없는 오류가 발생했습니다.');
-      }
-    } catch (err) {
-      setError('네트워크 오류가 발생했습니다.');
-    } finally {
-      setLoading(false);
+    // TODO: API 연동
+    console.log('Form submitted:', formData);
+
+    // 임시로 로그인 처리
+    if (!isSignup && formData.account && formData.password) {
+      onLogin({ account: formData.account, name: formData.account });
     }
   };
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
   return (
-    <div className="login-page">
-      <div className="login-container">
-        <h2>로그인</h2>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="account">아이디</label>
-          <input
-            id="account"
-            type="text"
-            value={account}
-            onChange={e => setAccount(e.target.value)}
-            placeholder="아이디를 입력하세요"
-            autoComplete="username"
-          />
-          <label htmlFor="password">비밀번호</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            placeholder="비밀번호를 입력하세요"
-            autoComplete="current-password"
-          />
-          {error && <div className="login-error">{error}</div>}
-          <div style={{display:'flex', gap:'0.5rem', marginTop:'0.5rem'}}>
-            <button type="submit" className="login-btn" disabled={loading}>
-              {loading ? '로그인 중...' : '로그인'}
-            </button>
-            <button type="button" className="login-btn" style={{background:'#bdbdbd'}} onClick={()=>setSignupOpen(true)} disabled={loading}>
-              회원가입
-            </button>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1 flex flex-col items-center">
+          <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-2">
+            <List className="h-6 w-6 text-white" />
           </div>
-        </form>
-      </div>
-      <SignupModal isOpen={signupOpen} onClose={()=>setSignupOpen(false)} onSignup={onLogin} />
+          <CardTitle className="text-2xl font-bold">
+            {isSignup ? '회원가입' : '로그인'}
+          </CardTitle>
+          <CardDescription>
+            {isSignup
+              ? 'MyTodoList에 가입하세요'
+              : 'MyTodoList에 오신 것을 환영합니다'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="account" className="text-sm font-medium">
+                아이디
+              </label>
+              <Input
+                id="account"
+                name="account"
+                type="text"
+                placeholder="아이디를 입력하세요"
+                value={formData.account}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="password" className="text-sm font-medium">
+                비밀번호
+              </label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="비밀번호를 입력하세요"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {isSignup && (
+              <div className="space-y-2">
+                <label htmlFor="name" className="text-sm font-medium">
+                  이름
+                </label>
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="이름을 입력하세요"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            )}
+
+            <Button type="submit" className="w-full">
+              {isSignup ? '회원가입' : '로그인'}
+            </Button>
+          </form>
+
+          <div className="mt-4 text-center text-sm">
+            {isSignup ? (
+              <p>
+                이미 계정이 있으신가요?{' '}
+                <button
+                  type="button"
+                  onClick={() => setIsSignup(false)}
+                  className="text-primary font-medium hover:underline"
+                >
+                  로그인
+                </button>
+              </p>
+            ) : (
+              <p>
+                계정이 없으신가요?{' '}
+                <button
+                  type="button"
+                  onClick={() => setIsSignup(true)}
+                  className="text-primary font-medium hover:underline"
+                >
+                  회원가입
+                </button>
+              </p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
-
-export default LoginPage;
