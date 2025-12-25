@@ -1,4 +1,5 @@
 import React from 'react';
+import { Droppable, Draggable } from '@hello-pangea/dnd';
 import { Plus } from 'lucide-react';
 import KanbanCard from './KanbanCard';
 import { Button } from '../ui/button';
@@ -33,22 +34,43 @@ export default function KanbanColumn({ status, tasks, onAddTask, onCardClick, on
         </Button>
       </div>
 
-      <div className="space-y-3 flex-1">
-        {tasks.map((task) => (
-          <KanbanCard
-            key={task.id}
-            task={task}
-            onClick={() => onCardClick(task)}
-            onDelete={onDeleteTask}
-          />
-        ))}
+      <Droppable droppableId={status}>
+        {(provided, snapshot) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className={`space-y-3 flex-1 min-h-[200px] ${
+              snapshot.isDraggingOver ? 'bg-muted/50 rounded-md' : ''
+            }`}
+          >
+            {tasks.map((task, index) => (
+              <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                  >
+                    <KanbanCard
+                      task={task}
+                      onClick={() => onCardClick(task)}
+                      onDelete={onDeleteTask}
+                      isDragging={snapshot.isDragging}
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
 
-        {tasks.length === 0 && (
-          <div className="text-center py-8 text-sm text-muted-foreground">
-            태스크가 없습니다
+            {tasks.length === 0 && (
+              <div className="text-center py-8 text-sm text-muted-foreground">
+                태스크가 없습니다
+              </div>
+            )}
           </div>
         )}
-      </div>
+      </Droppable>
     </div>
   );
 }

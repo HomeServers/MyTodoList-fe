@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Plus, LayoutGrid, Search, Trash2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import TaskAddModal from '../modals/TaskAddModal';
+import TaskDetailModal from '../modals/TaskDetailModal';
+import TaskEditModal from '../modals/TaskEditModal';
 
 const statusLabels = {
   PENDING: '대기',
@@ -18,60 +21,88 @@ const statusColors = {
   EXPIRED: 'bg-gray-100 text-gray-800',
 };
 
-// Mock data
-const mockTasks = [
-  { id: '1', content: '3가지 스타일로 디자인 초안 작성', status: 'IN_PROGRESS', dueDate: '2025-04-17T23:59:59.999Z' },
-  { id: '2', content: '와이어프레임 개발', status: 'IN_PROGRESS' },
-  { id: '3', content: '웹사이트 카피 작성', status: 'IN_PROGRESS', dueDate: '2025-04-19T23:59:59.999Z' },
-  { id: '4', content: '각 페이지의 메타 제목 및 설명 작성', status: 'PENDING' },
-  { id: '5', content: '선택한 CMS 플랫폼을 사용하여 웹사이트 개발', status: 'PENDING', dueDate: '2025-04-19T23:59:59.999Z' },
-  { id: '6', content: '전체 스타일로 웹사이트 디자인', status: 'PENDING', dueDate: '2025-04-24T23:59:59.999Z' },
-  { id: '7', content: '웹 개발자용 디자인 파일 준비', status: 'PENDING' },
-  { id: '8', content: 'CMS 플랫폼 조사', status: 'COMPLETED' },
-  { id: '9', content: '새 웹사이트 구조 개발', status: 'COMPLETED' },
-];
-
-export default function ListView({ onViewChange }) {
+export default function ListView({
+  tasks,
+  onViewChange,
+  onAddTask,
+  onUpdateTask,
+  onDeleteTask,
+  loading,
+  error,
+}) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
 
-  const filteredTasks = mockTasks.filter((task) => {
+  // tasks 객체를 배열로 변환
+  const allTasks = useMemo(() => {
+    if (!tasks) return [];
+    return Object.values(tasks).flat();
+  }, [tasks]);
+
+  const filteredTasks = allTasks.filter((task) => {
     const matchesSearch = task.content.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'all' || task.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
 
-  const handleDelete = (taskId) => {
-    console.log('Delete task:', taskId);
+  const handleDelete = async (taskId) => {
+    await onDeleteTask(taskId);
   };
 
   const handleRowClick = (task) => {
-    console.log('Task clicked:', task);
+    setSelectedTask(task);
+    setIsDetailModalOpen(true);
   };
 
-  return (
-    <div className="h-full flex flex-col">
-      {/* Header */}
-      <div className="px-8 py-6 border-b bg-background">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">리스트 뷰</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              모든 태스크를 테이블 형식으로 확인하세요
-            </p>
-          </div>
+  const handleEdit = (task) => {
+    setSelectedTask(task);
+    setIsEditModalOpen(true);
+  };
 
-          <div className="flex items-center gap-2">
-            <Button onClick={() => onViewChange?.('kanban')} variant="outline" size="sm">
-              <LayoutGrid className="h-4 w-4 mr-2" />
-              칸반 뷰
-            </Button>
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              새 태스크
-            </Button>
+  if (loading && !tasks) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <p className="text-muted-foreground">로딩 중...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <p className="text-destructive">에러: {error}</p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="h-full flex flex-col">
+        {/* Header */}
+        <div className="px-8 py-6 border-b bg-background">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">리스트 뷰</h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                모든 태스크를 테이블 형식으로 확인하세요
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button onClick={() => onViewChange?.('kanban')} variant="outline" size="sm">
+                <LayoutGrid className="h-4 w-4 mr-2" />
+                칸반 뷰
+              </Button>
+              <Button onClick={() => setIsAddModalOpen(true)} size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                새 태스크
+              </Button>
+            </div>
           </div>
-        </div>
 
         {/* Filters */}
         <div className="flex items-center gap-4">
@@ -174,5 +205,31 @@ export default function ListView({ onViewChange }) {
         </div>
       </div>
     </div>
+
+      {/* Modals */}
+      <TaskAddModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onConfirm={onAddTask}
+      />
+
+      <TaskDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        task={selectedTask}
+        onEdit={handleEdit}
+        onDelete={async (task) => {
+          await handleDelete(task.id);
+          setIsDetailModalOpen(false);
+        }}
+      />
+
+      <TaskEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        task={selectedTask}
+        onConfirm={onUpdateTask}
+      />
+    </>
   );
 }

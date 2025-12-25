@@ -3,6 +3,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { List } from 'lucide-react';
+import * as api from '../services/api';
 
 export default function LoginPage({ onLogin }) {
   const [isSignup, setIsSignup] = useState(false);
@@ -11,15 +12,49 @@ export default function LoginPage({ onLogin }) {
     password: '',
     name: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: API 연동
-    console.log('Form submitted:', formData);
+    setError('');
+    setLoading(true);
 
-    // 임시로 로그인 처리
-    if (!isSignup && formData.account && formData.password) {
-      onLogin({ account: formData.account, name: formData.account });
+    try {
+      if (isSignup) {
+        // 회원가입
+        if (!formData.account || !formData.password || !formData.name) {
+          setError('모든 항목을 입력하세요.');
+          return;
+        }
+
+        await api.signup(formData.account, formData.password, formData.name);
+
+        // 회원가입 성공 후 자동 로그인
+        const accessToken = await api.signin(formData.account, formData.password);
+        onLogin({
+          account: formData.account,
+          name: formData.name,
+          accessToken
+        });
+      } else {
+        // 로그인
+        if (!formData.account || !formData.password) {
+          setError('아이디와 비밀번호를 모두 입력하세요.');
+          return;
+        }
+
+        const accessToken = await api.signin(formData.account, formData.password);
+        onLogin({
+          account: formData.account,
+          name: formData.account,
+          accessToken
+        });
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -95,8 +130,14 @@ export default function LoginPage({ onLogin }) {
               </div>
             )}
 
-            <Button type="submit" className="w-full">
-              {isSignup ? '회원가입' : '로그인'}
+            {error && (
+              <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md text-destructive text-sm">
+                {error}
+              </div>
+            )}
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? '처리 중...' : (isSignup ? '회원가입' : '로그인')}
             </Button>
           </form>
 
@@ -106,8 +147,12 @@ export default function LoginPage({ onLogin }) {
                 이미 계정이 있으신가요?{' '}
                 <button
                   type="button"
-                  onClick={() => setIsSignup(false)}
+                  onClick={() => {
+                    setIsSignup(false);
+                    setError('');
+                  }}
                   className="text-primary font-medium hover:underline"
+                  disabled={loading}
                 >
                   로그인
                 </button>
@@ -117,8 +162,12 @@ export default function LoginPage({ onLogin }) {
                 계정이 없으신가요?{' '}
                 <button
                   type="button"
-                  onClick={() => setIsSignup(true)}
+                  onClick={() => {
+                    setIsSignup(true);
+                    setError('');
+                  }}
                   className="text-primary font-medium hover:underline"
+                  disabled={loading}
                 >
                   회원가입
                 </button>

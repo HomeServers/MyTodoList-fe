@@ -9,14 +9,15 @@ const statusColors = {
   EXPIRED: 'bg-status-expired',
 };
 
-export default function KanbanCard({ task, onClick, onDelete }) {
+export default function KanbanCard({ task, onClick, onDelete, isDragging }) {
   const bgColor = statusColors[task.status] || statusColors.PENDING;
 
   return (
     <div
       className={cn(
         "p-4 rounded-lg cursor-pointer transition-all hover:shadow-md",
-        bgColor
+        bgColor,
+        isDragging && "opacity-50 rotate-2 scale-105"
       )}
       onClick={onClick}
     >
