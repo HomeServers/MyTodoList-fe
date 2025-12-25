@@ -22,7 +22,7 @@ export default function KanbanCard({ task, onClick, onDelete, isDragging }) {
       onClick={onClick}
     >
       <div className="flex items-start justify-between gap-2 mb-2">
-        <p className="text-sm font-medium text-foreground flex-1">
+        <p className="text-sm font-medium text-foreground flex-1 break-words">
           {task.content}
         </p>
         <button
@@ -30,7 +30,7 @@ export default function KanbanCard({ task, onClick, onDelete, isDragging }) {
             e.stopPropagation();
             onDelete(task);
           }}
-          className="p-1 hover:bg-black/10 rounded transition-colors"
+          className="p-1 hover:bg-black/10 rounded transition-colors flex-shrink-0"
         >
           <Trash2 className="h-4 w-4 text-foreground/60" />
         </button>

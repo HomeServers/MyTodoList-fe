@@ -100,10 +100,13 @@ export default function useTasks(accessToken) {
 
   // 드래그앤드롭으로 상태 변경
   const moveTask = useCallback(async (taskId, fromStatus, toStatus, newIndex) => {
+    // taskId를 숫자로 변환 (draggableId가 문자열로 전달될 수 있음)
+    const numericTaskId = typeof taskId === 'string' ? parseInt(taskId, 10) : taskId;
+
     // UI 먼저 업데이트 (낙관적 업데이트)
     setTasks((prevTasks) => {
       const sourceTasks = [...prevTasks[fromStatus]];
-      const taskIndex = sourceTasks.findIndex((t) => t.id === taskId);
+      const taskIndex = sourceTasks.findIndex((t) => t.id === numericTaskId);
 
       if (taskIndex === -1) return prevTasks;
 
@@ -132,9 +135,9 @@ export default function useTasks(accessToken) {
 
     // 서버에 업데이트
     try {
-      const taskToUpdate = tasks[fromStatus].find((t) => t.id === taskId);
+      const taskToUpdate = tasks[fromStatus].find((t) => t.id === numericTaskId);
       if (taskToUpdate) {
-        await api.updateTask(taskId, { ...taskToUpdate, status: toStatus }, accessToken);
+        await api.updateTask(numericTaskId, { ...taskToUpdate, status: toStatus }, accessToken);
       }
     } catch (err) {
       setError(err.message);
