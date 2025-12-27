@@ -8,12 +8,21 @@ import {
 } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
+import { FileText, Calendar, Clock, AlertCircle } from 'lucide-react';
+import { cn } from '../../lib/utils';
 
 const statusLabels = {
   PENDING: '대기',
   IN_PROGRESS: '진행중',
   COMPLETED: '완료',
   EXPIRED: '만료',
+};
+
+const statusColors = {
+  PENDING: 'bg-blue-100 text-blue-800 border-blue-200',
+  IN_PROGRESS: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  COMPLETED: 'bg-green-100 text-green-800 border-green-200',
+  EXPIRED: 'bg-red-100 text-red-800 border-red-200',
 };
 
 export default function TaskDetailModal({ isOpen, onClose, task, onEdit, onDelete }) {
@@ -41,6 +50,24 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit, onDelet
 
   const isExpired = task.status === 'EXPIRED';
 
+  // D-day 계산
+  const getDdayText = (dueDate) => {
+    if (!dueDate) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+    const diffTime = due - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) return `D+${Math.abs(diffDays)}`;
+    if (diffDays === 0) return 'D-Day';
+    return `D-${diffDays}`;
+  };
+
+  const ddayText = task.dueDate ? getDdayText(task.dueDate) : null;
+  const isDday = ddayText === 'D-Day' || (ddayText && ddayText.startsWith('D+'));
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
@@ -50,9 +77,14 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit, onDelet
 
         {isReactivating ? (
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              만료된 태스크를 재활성화하려면 새로운 마감일을 설정하세요.
-            </p>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-amber-800">
+                  만료된 태스크를 재활성화하려면 새로운 마감일을 설정하세요.
+                </p>
+              </div>
+            </div>
             <div>
               <label htmlFor="newDueDate" className="text-sm font-medium block mb-2">
                 새 마감일
@@ -69,27 +101,69 @@ export default function TaskDetailModal({ isOpen, onClose, task, onEdit, onDelet
           </div>
         ) : (
           <div className="space-y-4">
-            <div>
-              <h4 className="text-sm font-semibold text-muted-foreground mb-2">내용</h4>
-              <p
-                className="whitespace-pre-wrap break-words"
-                style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
+            {/* 상태 배지 */}
+            <div className="flex items-center gap-2">
+              <span
+                className={cn(
+                  'px-3 py-1.5 rounded-full text-sm font-medium border',
+                  statusColors[task.status]
+                )}
               >
-                {task.content}
-              </p>
+                {statusLabels[task.status]}
+              </span>
+              {ddayText && (
+                <span
+                  className={cn(
+                    'px-3 py-1.5 rounded-full text-sm font-bold border',
+                    isDday
+                      ? 'bg-red-100 text-red-800 border-red-200'
+                      : 'bg-slate-100 text-slate-800 border-slate-200'
+                  )}
+                >
+                  {ddayText}
+                </span>
+              )}
             </div>
 
+            {/* 내용 */}
+            <div className="bg-muted/50 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <FileText className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                    내용
+                  </h4>
+                  <p
+                    className="text-foreground whitespace-pre-wrap break-words"
+                    style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
+                  >
+                    {task.content}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 마감일 */}
             {task.dueDate && (
-              <div>
-                <h4 className="text-sm font-semibold text-muted-foreground mb-2">마감일</h4>
-                <p>{new Date(task.dueDate).toLocaleDateString('ko-KR')}</p>
+              <div className="bg-muted/50 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <Calendar className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                      마감일
+                    </h4>
+                    <p className="text-foreground font-medium">
+                      {new Date(task.dueDate).toLocaleDateString('ko-KR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        weekday: 'short',
+                      })}
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
-
-            <div>
-              <h4 className="text-sm font-semibold text-muted-foreground mb-2">상태</h4>
-              <p>{statusLabels[task.status] || task.status}</p>
-            </div>
           </div>
         )}
 

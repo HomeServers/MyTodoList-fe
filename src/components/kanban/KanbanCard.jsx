@@ -15,7 +15,8 @@ export default function KanbanCard({ task, onClick, onDelete, isDragging }) {
   return (
     <div
       className={cn(
-        "p-4 rounded-lg cursor-pointer transition-all hover:shadow-md overflow-hidden",
+        "p-4 rounded-lg cursor-pointer overflow-hidden",
+        "transition-shadow duration-150 hover:shadow-md",
         bgColor,
         isDragging && "opacity-50 rotate-2 scale-105"
       )}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { DragDropContext } from '@hello-pangea/dnd';
 import KanbanColumn from './KanbanColumn';
 import { Button } from '../ui/button';
 import { Plus, List as ListIcon } from 'lucide-react';
@@ -69,6 +69,13 @@ export default function KanbanView({
     setIsDragReactivateOpen(false);
     setPendingDragInfo(null);
     setSelectedTask(null);
+  };
+
+  const handleDragStart = () => {
+    // 드래그 시작 시 햅틱 피드백 (모바일)
+    if (window.navigator?.vibrate) {
+      window.navigator.vibrate(10);
+    }
   };
 
   const handleDragEnd = (result) => {
@@ -155,7 +162,7 @@ export default function KanbanView({
 
         {/* Kanban Board */}
         <div className="flex-1 overflow-x-auto p-8">
-          <DragDropContext onDragEnd={handleDragEnd}>
+          <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <div className="flex gap-6 h-full">
               {Object.keys(tasks).map((status) => (
                 <KanbanColumn

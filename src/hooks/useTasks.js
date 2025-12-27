@@ -99,11 +99,25 @@ export default function useTasks(accessToken) {
   }, [accessToken]);
 
   // 드래그앤드롭으로 상태 변경
-  const moveTask = useCallback(async (taskId, fromStatus, toStatus, newIndex) => {
+  const moveTask = useCallback((taskId, fromStatus, toStatus, newIndex) => {
     // taskId를 숫자로 변환 (draggableId가 문자열로 전달될 수 있음)
     const numericTaskId = typeof taskId === 'string' ? parseInt(taskId, 10) : taskId;
 
-    // UI 먼저 업데이트 (낙관적 업데이트)
+    // 이동할 태스크를 먼저 찾기 (상태 업데이트 전)
+    const taskToUpdate = tasks[fromStatus]?.find((t) => t.id === numericTaskId);
+    if (!taskToUpdate) {
+      console.error('이동할 태스크를 찾을 수 없습니다:', numericTaskId);
+      return;
+    }
+
+    // API 호출을 즉시 시작 (UI 업데이트와 병렬 실행)
+    const apiPromise = api.updateTask(
+      numericTaskId,
+      { ...taskToUpdate, status: toStatus },
+      accessToken
+    );
+
+    // UI 즉시 업데이트 (낙관적 업데이트)
     setTasks((prevTasks) => {
       const sourceTasks = [...prevTasks[fromStatus]];
       const taskIndex = sourceTasks.findIndex((t) => t.id === numericTaskId);
@@ -133,18 +147,13 @@ export default function useTasks(accessToken) {
       }
     });
 
-    // 서버에 업데이트
-    try {
-      const taskToUpdate = tasks[fromStatus].find((t) => t.id === numericTaskId);
-      if (taskToUpdate) {
-        await api.updateTask(numericTaskId, { ...taskToUpdate, status: toStatus }, accessToken);
-      }
-    } catch (err) {
+    // API 에러 핸들링 (백그라운드)
+    apiPromise.catch((err) => {
       setError(err.message);
       console.error('태스크 이동 오류:', err);
       // 실패 시 다시 로드
-      await loadTasks();
-    }
+      loadTasks();
+    });
   }, [tasks, accessToken, loadTasks]);
 
   // 초기 로드
