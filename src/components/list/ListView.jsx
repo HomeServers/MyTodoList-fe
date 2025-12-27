@@ -6,6 +6,7 @@ import { cn } from '../../lib/utils';
 import TaskAddModal from '../modals/TaskAddModal';
 import TaskDetailModal from '../modals/TaskDetailModal';
 import TaskEditModal from '../modals/TaskEditModal';
+import TaskDeleteConfirmModal from '../modals/TaskDeleteConfirmModal';
 
 const statusLabels = {
   PENDING: '대기',
@@ -35,6 +36,7 @@ export default function ListView({
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
   // tasks 객체를 배열로 변환
@@ -49,8 +51,13 @@ export default function ListView({
     return matchesSearch && matchesStatus;
   });
 
-  const handleDelete = async (taskId) => {
-    await onDeleteTask(taskId);
+  const handleDeleteClick = (task) => {
+    setSelectedTask(task);
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirm = async (task) => {
+    await onDeleteTask(task.id);
   };
 
   const handleRowClick = (task) => {
@@ -159,7 +166,12 @@ export default function ListView({
                   onClick={() => handleRowClick(task)}
                 >
                   <td className="p-4">
-                    <p className="font-medium text-foreground">{task.content}</p>
+                    <p
+                      className="font-medium text-foreground break-words"
+                      style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
+                    >
+                      {task.content}
+                    </p>
                   </td>
                   <td className="p-4">
                     <span
@@ -186,7 +198,7 @@ export default function ListView({
                       size="icon"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDelete(task.id);
+                        handleDeleteClick(task);
                       }}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
@@ -218,9 +230,9 @@ export default function ListView({
         onClose={() => setIsDetailModalOpen(false)}
         task={selectedTask}
         onEdit={handleEdit}
-        onDelete={async (task) => {
-          await handleDelete(task.id);
+        onDelete={(task) => {
           setIsDetailModalOpen(false);
+          handleDeleteClick(task);
         }}
       />
 
@@ -229,6 +241,13 @@ export default function ListView({
         onClose={() => setIsEditModalOpen(false)}
         task={selectedTask}
         onConfirm={onUpdateTask}
+      />
+
+      <TaskDeleteConfirmModal
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        task={selectedTask}
+        onConfirm={handleDeleteConfirm}
       />
     </>
   );

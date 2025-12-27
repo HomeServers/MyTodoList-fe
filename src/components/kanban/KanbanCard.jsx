@@ -15,14 +15,17 @@ export default function KanbanCard({ task, onClick, onDelete, isDragging }) {
   return (
     <div
       className={cn(
-        "p-4 rounded-lg cursor-pointer transition-all hover:shadow-md",
+        "p-4 rounded-lg cursor-pointer transition-all hover:shadow-md overflow-hidden",
         bgColor,
         isDragging && "opacity-50 rotate-2 scale-105"
       )}
       onClick={onClick}
     >
       <div className="flex items-start justify-between gap-2 mb-2">
-        <p className="text-sm font-medium text-foreground flex-1 break-words">
+        <p
+          className="text-sm font-medium text-foreground flex-1 break-words"
+          style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
+        >
           {task.content}
         </p>
         <button
