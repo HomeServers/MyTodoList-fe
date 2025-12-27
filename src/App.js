@@ -4,6 +4,7 @@ import MainLayout from './components/layout/MainLayout';
 import CalendarView from './components/calendar/CalendarView';
 import KanbanView from './components/kanban/KanbanView';
 import ListView from './components/list/ListView';
+import ImportExportView from './components/import-export/ImportExportView';
 import useLocalStorage from './hooks/useLocalStorage';
 import useTasks from './hooks/useTasks';
 
@@ -109,14 +110,10 @@ function App() {
 
           {/* Import/Export */}
           {currentView === 'import-export' && (
-            <div className="flex items-center justify-center h-full p-8">
-              <div className="text-center">
-                <h2 className="text-2xl font-bold mb-2">Import / Export</h2>
-                <p className="text-muted-foreground">
-                  .ics 파일로 태스크를 가져오거나 내보낼 수 있습니다.
-                </p>
-              </div>
-            </div>
+            <ImportExportView
+              accessToken={user?.accessToken}
+              onImportSuccess={loadTasks}
+            />
           )}
         </>
       )}
