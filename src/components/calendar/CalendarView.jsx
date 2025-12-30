@@ -1,18 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Plus } from 'lucide-react';
 import { cn } from '../../lib/utils';
-
-// Mock data
-const mockTasks = [
-  { id: '1', content: 'Mary Johnson', status: 'PENDING', dueDate: '2025-01-15T10:00:00.000Z', time: '9 Mon' },
-  { id: '2', content: 'Get ready for the executive meeting', status: 'PENDING', dueDate: '2025-01-15T14:30:00.000Z', time: '2:30 - 3:30 pm' },
-  { id: '3', content: 'Check new Google Events', status: 'PENDING', dueDate: '2025-01-16T11:00:00.000Z', time: '3 Wed' },
-  { id: '4', content: 'Organize product team with John and Kate', status: 'IN_PROGRESS', dueDate: '2025-01-16T09:00:00.000Z', time: '5 days left' },
-  { id: '5', content: 'Write email ready for scheduling new marketing campaign', status: 'PENDING', dueDate: '2025-01-17T16:00:00.000Z', time: '4 Thu' },
-  { id: '6', content: 'Finalize the bill of marketing campaign', status: 'IN_PROGRESS', dueDate: '2025-01-18T13:00:00.000Z', time: '1 Fri' },
-];
 
 const statusColors = {
   PENDING: 'bg-blue-100 border-blue-200',
@@ -24,12 +14,93 @@ const statusColors = {
 const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
 const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
-export default function CalendarView() {
+export default function CalendarView({ tasks, loading, error }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
+
+  // tasks 객체를 배열로 변환
+  const allTasks = useMemo(() => {
+    if (!tasks) return [];
+    return Object.values(tasks).flat();
+  }, [tasks]);
+
+  // 마감일이 있는 태스크만 필터링하고 날짜순 정렬
+  const tasksWithDueDate = useMemo(() => {
+    return allTasks
+      .filter((task) => task.dueDate)
+      .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+  }, [allTasks]);
+
+  // 마감일이 없는 대기 중인 태스크 (PENDING만)
+  const waitingTasks = useMemo(() => {
+    return allTasks.filter((task) => !task.dueDate && task.status === 'PENDING');
+  }, [allTasks]);
+
+  // 오늘 태스크
+  const todayTasks = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    return tasksWithDueDate.filter((task) => {
+      const dueDate = new Date(task.dueDate);
+      return dueDate >= today && dueDate < tomorrow;
+    });
+  }, [tasksWithDueDate]);
+
+  // 이번 주 태스크 (오늘 제외)
+  const thisWeekTasks = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // 내일
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    // 이번 주 일요일 계산
+    const thisWeekStart = new Date(today);
+    thisWeekStart.setDate(today.getDate() - today.getDay());
+    thisWeekStart.setHours(0, 0, 0, 0);
+
+    // 이번 주 토요일 자정 (일요일 00:00 직전)
+    const thisWeekEnd = new Date(thisWeekStart);
+    thisWeekEnd.setDate(thisWeekStart.getDate() + 7);
+    thisWeekEnd.setHours(0, 0, 0, 0);
+
+    return tasksWithDueDate.filter((task) => {
+      const dueDate = new Date(task.dueDate);
+      return dueDate >= tomorrow && dueDate < thisWeekEnd;
+    });
+  }, [tasksWithDueDate]);
+
+  // 선택한 날짜의 태스크
+  const selectedDateTasks = useMemo(() => {
+    const selected = new Date(selectedDate);
+    selected.setHours(0, 0, 0, 0);
+    const nextDay = new Date(selected);
+    nextDay.setDate(nextDay.getDate() + 1);
+
+    return tasksWithDueDate.filter((task) => {
+      const dueDate = new Date(task.dueDate);
+      return dueDate >= selected && dueDate < nextDay;
+    });
+  }, [tasksWithDueDate, selectedDate]);
+
+  // 날짜별 태스크 개수 맵
+  const taskCountByDate = useMemo(() => {
+    const countMap = {};
+    tasksWithDueDate.forEach((task) => {
+      const date = new Date(task.dueDate);
+      date.setHours(0, 0, 0, 0);
+      const key = date.toISOString().split('T')[0];
+      countMap[key] = (countMap[key] || 0) + 1;
+    });
+    return countMap;
+  }, [tasksWithDueDate]);
 
   // 이번 달의 첫날과 마지막 날
   const firstDay = new Date(year, month, 1);
@@ -72,6 +143,41 @@ export default function CalendarView() {
            date.getFullYear() === selectedDate.getFullYear();
   };
 
+  const getTaskCount = (date) => {
+    const key = date.toISOString().split('T')[0];
+    return taskCountByDate[key] || 0;
+  };
+
+  const formatTime = (dueDate) => {
+    const date = new Date(dueDate);
+    const now = new Date();
+    const diffDays = Math.ceil((date - now) / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return '오늘';
+    if (diffDays === 1) return '내일';
+    if (diffDays < 0) return `${Math.abs(diffDays)}일 지남`;
+    if (diffDays <= 7) return `${diffDays}일 남음`;
+
+    const weekday = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
+    return `${date.getMonth() + 1}/${date.getDate()} (${weekday})`;
+  };
+
+  if (loading && !tasks) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <p className="text-muted-foreground">로딩 중...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <p className="text-destructive">에러: {error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full flex flex-col bg-background">
       {/* Header */}
@@ -82,13 +188,6 @@ export default function CalendarView() {
             <p className="text-sm text-muted-foreground mt-1">
               일정과 태스크를 캘린더에서 확인하세요
             </p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              새 일정
-            </Button>
           </div>
         </div>
       </div>
@@ -106,67 +205,128 @@ export default function CalendarView() {
                 <span className="text-sm text-muted-foreground">
                   {new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' })}
                 </span>
+                <span className="text-xs text-muted-foreground">
+                  ({todayTasks.length}개)
+                </span>
               </div>
 
-              <div className="space-y-3">
-                {mockTasks.slice(0, 3).map((task) => (
-                  <Card
-                    key={task.id}
-                    className={cn(
-                      'p-4 cursor-pointer transition-all hover:shadow-md border',
-                      statusColors[task.status]
-                    )}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="flex-1">
-                        <p
-                          className="text-sm font-medium text-foreground mb-1 break-words"
-                          style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
-                        >
-                          {task.content}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {task.time}
-                        </p>
+              {todayTasks.length === 0 ? (
+                <div className="text-center py-8 text-sm text-muted-foreground">
+                  오늘 예정된 태스크가 없습니다
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {todayTasks.map((task) => (
+                    <Card
+                      key={task.id}
+                      className={cn(
+                        'p-4 cursor-pointer transition-all hover:shadow-md border',
+                        statusColors[task.status]
+                      )}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1">
+                          <p
+                            className="text-sm font-medium text-foreground mb-1 break-words"
+                            style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
+                          >
+                            {task.content}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {formatTime(task.dueDate)}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Other Days */}
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-sm font-medium text-foreground">이번 주</span>
-              </div>
+            {/* Selected Date Section (if not today) */}
+            {!isToday(selectedDate) && (
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-sm font-medium text-foreground">선택한 날짜</span>
+                  <span className="text-sm text-muted-foreground">
+                    {selectedDate.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' })}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    ({selectedDateTasks.length}개)
+                  </span>
+                </div>
 
-              <div className="space-y-3">
-                {mockTasks.slice(3).map((task) => (
-                  <Card
-                    key={task.id}
-                    className={cn(
-                      'p-4 cursor-pointer transition-all hover:shadow-md border',
-                      statusColors[task.status]
-                    )}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="flex-1">
-                        <p
-                          className="text-sm font-medium text-foreground mb-1 break-words"
-                          style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
-                        >
-                          {task.content}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {task.time}
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
+                {selectedDateTasks.length === 0 ? (
+                  <div className="text-center py-8 text-sm text-muted-foreground">
+                    이 날짜에 예정된 태스크가 없습니다
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {selectedDateTasks.map((task) => (
+                      <Card
+                        key={task.id}
+                        className={cn(
+                          'p-4 cursor-pointer transition-all hover:shadow-md border',
+                          statusColors[task.status]
+                        )}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="flex-1">
+                            <p
+                              className="text-sm font-medium text-foreground mb-1 break-words"
+                              style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
+                            >
+                              {task.content}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {formatTime(task.dueDate)}
+                            </p>
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
+            )}
+
+            {/* This Week Section */}
+            {thisWeekTasks.length > 0 && (
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-sm font-medium text-foreground">이번 주</span>
+                  <span className="text-xs text-muted-foreground">
+                    ({thisWeekTasks.length}개)
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {thisWeekTasks.map((task) => (
+                    <Card
+                      key={task.id}
+                      className={cn(
+                        'p-4 cursor-pointer transition-all hover:shadow-md border',
+                        statusColors[task.status]
+                      )}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="flex-1">
+                          <p
+                            className="text-sm font-medium text-foreground mb-1 break-words"
+                            style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
+                          >
+                            {task.content}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {formatTime(task.dueDate)}
+                          </p>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right: Mini Calendar */}
@@ -215,20 +375,24 @@ export default function CalendarView() {
                   const isCurrentMonth = date.getMonth() === month;
                   const isTodayDate = isToday(date);
                   const isSelectedDate = isSelected(date);
+                  const taskCount = getTaskCount(date);
 
                   return (
                     <button
                       key={index}
                       onClick={() => setSelectedDate(date)}
                       className={cn(
-                        'aspect-square flex items-center justify-center text-xs rounded-md transition-colors',
+                        'relative aspect-square flex items-center justify-center text-xs rounded-md transition-colors',
                         !isCurrentMonth && 'text-muted-foreground/40',
                         isCurrentMonth && 'text-foreground hover:bg-accent',
                         isTodayDate && 'bg-primary text-primary-foreground font-bold',
                         isSelectedDate && !isTodayDate && 'bg-accent ring-2 ring-primary'
                       )}
                     >
-                      {date.getDate()}
+                      <span>{date.getDate()}</span>
+                      {taskCount > 0 && isCurrentMonth && (
+                        <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
+                      )}
                     </button>
                   );
                 })}
@@ -251,22 +415,29 @@ export default function CalendarView() {
             </Card>
 
             {/* Waiting List Card */}
-            <Card className="p-4 mt-4 bg-green-50 border-green-200">
-              <h4 className="text-sm font-semibold text-foreground mb-2">
-                대기 중인 목록
-              </h4>
-              <div className="space-y-2">
-                <div className="text-xs text-muted-foreground">
-                  Employee Training
+            {waitingTasks.length > 0 && (
+              <Card className="p-4 mt-4 bg-green-50 border-green-200">
+                <h4 className="text-sm font-semibold text-foreground mb-2">
+                  대기 중인 목록 ({waitingTasks.length}개)
+                </h4>
+                <div className="space-y-2">
+                  {waitingTasks.slice(0, 5).map((task) => (
+                    <div
+                      key={task.id}
+                      className="text-xs text-muted-foreground truncate"
+                      title={task.content}
+                    >
+                      {task.content}
+                    </div>
+                  ))}
+                  {waitingTasks.length > 5 && (
+                    <div className="text-xs text-muted-foreground font-medium">
+                      +{waitingTasks.length - 5}개 더
+                    </div>
+                  )}
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  Product Roadmap
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Submit article: Marketing campaign
-                </div>
-              </div>
-            </Card>
+              </Card>
+            )}
           </div>
         </div>
       </div>
