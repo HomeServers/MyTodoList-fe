@@ -24,7 +24,7 @@ export default function KanbanCard({ task, onClick, onDelete, isDragging }) {
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <p
-          className="text-sm font-medium text-foreground flex-1 break-words"
+          className="text-sm font-medium text-foreground flex-1 break-words line-clamp-3 whitespace-pre-wrap"
           style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
         >
           {task.content}

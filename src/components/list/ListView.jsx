@@ -167,7 +167,7 @@ export default function ListView({
                 >
                   <td className="p-4">
                     <p
-                      className="font-medium text-foreground break-words"
+                      className="font-medium text-foreground break-words line-clamp-3 whitespace-pre-wrap"
                       style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
                     >
                       {task.content}

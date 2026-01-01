@@ -227,7 +227,7 @@ export default function CalendarView({ tasks, loading, error }) {
                       <div className="flex items-start gap-3">
                         <div className="flex-1">
                           <p
-                            className="text-sm font-medium text-foreground mb-1 break-words"
+                            className="text-sm font-medium text-foreground mb-1 break-words line-clamp-3 whitespace-pre-wrap"
                             style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
                           >
                             {task.content}
@@ -312,7 +312,7 @@ export default function CalendarView({ tasks, loading, error }) {
                       <div className="flex items-start gap-3">
                         <div className="flex-1">
                           <p
-                            className="text-sm font-medium text-foreground mb-1 break-words"
+                            className="text-sm font-medium text-foreground mb-1 break-words line-clamp-3 whitespace-pre-wrap"
                             style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
                           >
                             {task.content}
