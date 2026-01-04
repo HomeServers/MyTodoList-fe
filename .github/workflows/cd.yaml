@@ -60,7 +60,7 @@ jobs:
         VERSION=${GITHUB_REF#refs/tags/v}
 
         # Clone infrastructure repository
-        git@github.com:HomeServers/MyTodoList-fe.git
+        git@github.com:HomeServers/MyTodolist-Infrastructure.git
         cd MyTodoList-infra
 
         # Update image tag in kustomization
