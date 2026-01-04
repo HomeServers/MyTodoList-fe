@@ -60,8 +60,8 @@ jobs:
         VERSION=${GITHUB_REF#refs/tags/v}
 
         # Clone infrastructure repository
-        git@github.com:HomeServers/MyTodolist-Infrastructure.git
-        cd MyTodoList-infra
+        git clone https://x-access-token:${GH_TOKEN}@github.com/HomeServers/MyTodolist-Infrastructure.git
+        cd MyTodolist-Infrastructure
 
         # Update image tag in kustomization
         cd base
@@ -74,4 +74,4 @@ jobs:
         git config user.email "actions@github.com"
         git add kustomization.yaml
         git commit -m "Update frontend image to ${VERSION}"
-        git push https://x-access-token:${GH_TOKEN}@github.com/${{ secrets.DOCKER_USERNAME }}/MyTodoList-infra.git main
+        git push https://x-access-token:${GH_TOKEN}@github.com/HomeServers/MyTodolist-Infrastructure.git main
