@@ -66,8 +66,8 @@ jobs:
         # Update image tag in kustomization
         cd base
 
-        # Update frontend image tag using yq or sed
-        sed -i "s|newTag: .*|newTag: ${VERSION}|g" kustomization.yaml
+        # yq로 frontend만 업데이트
+        yq eval '(.images[] | select(.name == "nuhgnod/todolist-frontend") | .newTag) = "'${VERSION}'"' -i kustomization.yaml
 
         # Commit and push
         git config user.name "GitHub Actions Bot"
