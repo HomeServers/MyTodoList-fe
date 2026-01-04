@@ -60,7 +60,7 @@ jobs:
         VERSION=${GITHUB_REF#refs/tags/v}
 
         # Clone infrastructure repository
-        git clone https://github.com/${{ secrets.DOCKER_USERNAME }}/MyTodoList-infra.git
+        git clone https://x-access-token:${GH_TOKEN}@github.com/${{ secrets.REPOSITORY_USERNAME }}/MyTodoList-infra.git
         cd MyTodoList-infra
 
         # Update image tag in kustomization
